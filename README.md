@@ -60,11 +60,15 @@ Isso criará uma cópia local do repositório em sua máquina.
 
 ```
 UniAccessControl/
+├── controle_acesso/
+│   ├── database.py         # Conexão com MySQL
+│   ├── validador.py        # Validação de entradas
+│   └── main.py             # Programa principal
+├── docs/
+│   └── User_Stories.md     # User Stories do projeto
 ├── LICENSE
 ├── README.md
-├── <diretório-x>/
-├── <diretório-y>/
-└── <diretório-z>/
+└── requirements.txt
 ```
 
 - LICENSE: termos da licença do projeto (MIT).
