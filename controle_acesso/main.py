@@ -1,27 +1,17 @@
 from database import BancoDeDados
 from validador import ValidadorAcesso
-import os
-from dotenv import load_dotenv
-
-# Lê o arquivo .env e carrega as senhas para a memória
-load_dotenv()
-
-config_mysql = {
-    'host': os.getenv('DB_HOST'),
-    'user': os.getenv('DB_USER'),
-    'password': os.getenv('DB_PASSWORD'),
-    'database': os.getenv('DB_NAME')
-}
 
 # Inicializa as classes
-banco = BancoDeDados(config_mysql)
+banco = BancoDeDados()
 validador = ValidadorAcesso(banco)
 
-# Simula uma leitura de RFID
-print(" ==Simulador de Leitura RFID== ")
-tag_lida = input("Aproxime o cartao (Digite o RFID): ")
-zona_atual = 10  # Ex: ID 10 é o Lab de Eletrônica
-hora_agora = "10:30:00" # Em produção, seria datetime.now().strftime('%H:%M:%S')
+print("== Teste de Integração com o Banco de Dados ==")
+# Usando a tag da Professora Ana Maria
+tag_lida = input("Digite a tag RFID (ex: A1B2C3D4): ") 
+zona_atual = 10  # ID do Laboratório de Eletrônica
+hora_agora = "10:30:00" # Simulando às 10h30 da manhã
+
+print(f"\n[Processando leitura da tag {tag_lida} no Lab. de Eletrônica às {hora_agora}]")
 
 # Processa a leitura
 resultado = validador.processar_leitura(tag_lida, zona_atual, hora_agora)

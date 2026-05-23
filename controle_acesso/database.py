@@ -1,12 +1,20 @@
 import mysql.connector
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+# Lê o arquivo .env e carrega as senhas para a memória
+load_dotenv()
 
 class BancoDeDados:
-    def __init__(self, config):
-        self.config = config
-
     def conectar(self):
-        return mysql.connector.connect(**self.config)
+        """Estabelece a conexão usando as variáveis de ambiente."""
+        return mysql.connector.connect(
+            host=os.getenv('DB_HOST'),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASSWORD'),
+            database=os.getenv('DB_NAME')
+        )
 
     def buscar_permissao(self, rfid_tag, zona_id):
         """Busca o usuário e as regras de horário para aquela zona."""
