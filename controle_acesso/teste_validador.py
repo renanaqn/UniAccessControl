@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock
 from datetime import timedelta
-from validador import ValidadorAcesso
+from controle_acesso.validador import ValidadorAcesso
 
 class TestValidadorAcesso(unittest.TestCase):
     def setUp(self):
