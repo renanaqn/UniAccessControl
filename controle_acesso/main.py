@@ -11,7 +11,7 @@ tag_lida = input("Digite a tag RFID (ex: A1B2C3D4): ")
 zona_atual = 10  # ID do Laboratório de Eletrônica
 hora_agora = "10:30:00" # Simulando às 10h30 da manhã
 
-print(f"\n[Processando leitura da tag {tag_lida} no Lab. de Eletrônica às {hora_agora}]")
+print(f"\n[Processando leitura da tag {tag_lida} no Lab de Eletrônica às {hora_agora}]")
 
 # Processa a leitura
 resultado = validador.processar_leitura(tag_lida, zona_atual, hora_agora)
