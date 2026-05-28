@@ -15,9 +15,19 @@ Foram desenvolvidos três casos de teste principais para validar as regras de ac
 * **Acesso Negado por Tag Desconhecida:** Simula uma tentativa de invasão com um cartão não cadastrado. Valida se o sistema bloqueia o acesso e se registra a tentativa falha usando o número da tag desconhecida para fins de auditoria.
 * **Acesso Negado Fora do Horário:** Simula um usuário válido tentando entrar em uma zona fora do seu horário de permissão. Valida se o sistema bloqueia corretamente a porta com a mensagem de restrição temporal.
 
-## Cobertura de Código (Coverage)
-Utilizamos a ferramenta `coverage` para medir a abrangência dos nossos testes. Todos os fluxos condicionais (`if/else`) da classe `ValidadorAcesso` foram alcançados pela suíte de testes.
+## Como os testes foram executado
+Para reproduzir os testes localmente e verificar a cobertura do código, utilizamos a biblioteca `coverage`. No terminal, a partir da raiz do projeto, execute os seguintes comandos:
 
-O resultado obtido atendeu plenamente o critério de sucesso da Sprint, com a cobertura da classe principal atingindo o valor documentado abaixo:
+Execute os testes apontando para a pasta dedicada de testes:
+```
+coverage run -m unittest discover -s testes
+```
+Gere o relatório de cobertura no terminal:
+
+```
+coverage report -m
+```
+
+Com isto todos os fluxos condicionais (if/else) da classe ValidadorAcesso foram alcançados, onde podemos ver melhor abaixo:
 
 ![Print Coverage](../assets/unittest_coverage.png)
