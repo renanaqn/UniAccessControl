@@ -1,0 +1,4 @@
+reflex
+mysql-connector-python
+python-dotenv
+coverage

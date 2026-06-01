@@ -55,23 +55,21 @@ Isso criará uma cópia local do repositório em sua máquina.
 
 
 ## Estrutura do Projeto
-
-> *Esta seção pode variar conforme a organização do repositório de cada grupo.*
-
 ```
 UniAccessControl/
+├── controle_acesso/
+│   ├── database.py         # Conexão com MySQL e suas funções de manipulação
+│   ├── validador.py        # Validação de entradas
+│   └── main.py             # Programa principal
+├── docs/
+│   └── User_Stories.md     # User Stories do projeto
+├── database/
+│   └── init_db.sql         # Arquivo de inicialização do banco de dados
+├── testes/                 # Pasta para testes
 ├── LICENSE
 ├── README.md
-├── <diretório-x>/
-├── <diretório-y>/
-└── <diretório-z>/
+└── requirements.txt
 ```
-
-- LICENSE: termos da licença do projeto (MIT).
-- README.md: este arquivo de apresentação.
-- X: descrição do diretório X.
-- Y: descrição do diretório Y.
-- Z: descrição do diretório Z.
 
 ## Licença
 
