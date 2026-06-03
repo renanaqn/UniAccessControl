@@ -1,3 +1,18 @@
+# Ambiente
 .env
-__pycache__
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+
+#Testes
 .coverage
+
+# Bancos Locais
+*.db
+
+# Reflex
+**/.web/
+**/.states/
+**/assets/external/

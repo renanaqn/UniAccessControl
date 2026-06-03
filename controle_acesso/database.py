@@ -65,7 +65,7 @@ class BancoDeDados:
             cursor.close()
             conexao.close()
 
-    def buscar_ultimos_logs(self, limite=5):
+    def buscar_ultimos_logs(self, limite=50):
         """Retorna as últimas tentativas de acesso para o Admin visualizar."""
         query = """
             SELECT data_hora, rfid_tentativa, zona_id, resultado, motivo 
@@ -168,3 +168,75 @@ class BancoDeDados:
         finally:
             cursor.close()
             conexao.close()
+    
+    
+    def _contar_registros(self, tabela):
+        """Retorna a quantidade total de items em certa tabela"""
+        query = f"SELECT COUNT(*) AS total FROM {tabela}"
+
+        conexao = self.conectar()
+        cursor = conexao.cursor(dictionary=True)
+
+        try:
+            cursor.execute(query)
+            resultado = cursor.fetchone()
+            return resultado["total"]
+
+        except Exception as err:
+            print(f"Erro ao contar registros de {tabela}: {err}")
+            return 0
+
+        finally:
+            cursor.close()
+            conexao.close()
+    
+    def total_usuarios(self):
+        return self._contar_registros("usuarios")
+
+    def total_perfis(self):
+        return self._contar_registros("perfis")
+
+    def total_zonas(self):
+        return self._contar_registros("zonas")
+    
+    def acessos_permitidos_hoje(self):
+
+        query = """
+            SELECT COUNT(*) AS total
+            FROM auditoria_logs
+            WHERE DATE(data_hora) = CURDATE()
+            AND resultado = 'PERMITIDO'
+        """
+
+        conexao = self.conectar()
+        cursor = conexao.cursor(dictionary=True)
+
+        cursor.execute(query)
+
+        total = cursor.fetchone()["total"]
+
+        cursor.close()
+        conexao.close()
+
+        return total
+    
+    def acessos_rejeitados_hoje(self):
+
+        query = """
+            SELECT COUNT(*) AS total
+            FROM auditoria_logs
+            WHERE DATE(data_hora) = CURDATE()
+            AND resultado = 'REJEITADO'
+        """
+
+        conexao = self.conectar()
+        cursor = conexao.cursor(dictionary=True)
+
+        cursor.execute(query)
+
+        total = cursor.fetchone()["total"]
+
+        cursor.close()
+        conexao.close()
+
+        return total
