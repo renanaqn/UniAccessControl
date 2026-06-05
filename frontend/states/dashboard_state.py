@@ -13,7 +13,7 @@ class DashboardState(rx.State):
     total_zonas: int = 0
 
     acessos_aprovados_hoje: int = 0
-    acessos_rejeitados_hoje: int = 0
+    acessos_negados_hoje: int = 0
 
     ultimos_logs: list[dict] = []
 
@@ -27,4 +27,4 @@ class DashboardState(rx.State):
         self.ultimos_logs = db.buscar_ultimos_logs(10)
 
         self.acessos_aprovados_hoje = db.acessos_permitidos_hoje()
-        self.acessos_rejeitados_hoje = db.acessos_rejeitados_hoje()
+        self.acessos_negados_hoje = db.acessos_negados_hoje()

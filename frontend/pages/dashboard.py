@@ -30,7 +30,11 @@ def metric_card(title: str, value):
         width="250px",
     )
 
-
+@rx.page(
+    route="/",
+    title="UniAcessControl",
+    on_load=DashboardState.carregar_dados
+)
 def dashboard():
 
     return page_layout(
@@ -38,12 +42,17 @@ def dashboard():
         rx.vstack(
 
             rx.heading(
-                "UniAcessControl",
+                "UniAccessControl",
                 size="8"
             ),
 
             rx.text(
                 "Sistema de Controle de Acesso Universitário"
+            ),
+            
+            rx.moment(
+                interval=1000,
+                on_change=DashboardState.carregar_dados
             ),
 
             rx.divider(),
@@ -66,8 +75,8 @@ def dashboard():
                 ),
 
                 metric_card(
-                    "Acessos Rejeitados Hoje",
-                    DashboardState.acessos_rejeitados_hoje
+                    "Acessos Negados Hoje",
+                    DashboardState.acessos_negados_hoje
                 ),
 
                 wrap="wrap",
@@ -84,51 +93,7 @@ def dashboard():
                         size="5"
                     ),
 
-                    rx.table.root(
-
-                        rx.table.header(
-                            rx.table.row(
-                                rx.table.column_header_cell("Data/Hora"),
-                                rx.table.column_header_cell("RFID"),
-                                rx.table.column_header_cell("Zona"),
-                                rx.table.column_header_cell("Resultado"),
-                                rx.table.column_header_cell("Motivo"),
-                            )
-                        ),
-
-                        rx.table.body(
-
-                            rx.foreach(
-
-                                DashboardState.ultimos_logs,
-
-                                lambda log: rx.table.row(
-
-                                    rx.table.cell(
-                                        log["data_hora"]
-                                    ),
-
-                                    rx.table.cell(
-                                        log["rfid_tentativa"]
-                                    ),
-
-                                    rx.table.cell(
-                                        log["zona_id"]
-                                    ),
-
-                                    rx.table.cell(
-                                        log["resultado"]
-                                    ),
-
-                                    rx.table.cell(
-                                        log["motivo"]
-                                    ),
-                                )
-                            )
-                        ),
-                    ),
-
-                    width="100%",
+                    log_table(DashboardState.ultimos_logs)
                 ),
 
                 width="100%",

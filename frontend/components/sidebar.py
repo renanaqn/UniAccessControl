@@ -3,7 +3,7 @@ import reflex as rx
 def sidebar():
     return rx.box(
         rx.vstack(
-            rx.heading("UniAcessControl", size="6"),
+            rx.heading("UniAccessControl", size="6"),
 
             rx.divider(),
 
