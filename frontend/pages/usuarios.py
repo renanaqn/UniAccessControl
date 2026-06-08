@@ -9,12 +9,12 @@ from states.dashboard_state import DashboardState
 def usuarios_page():
     return page_layout(
         rx.vstack(
-            rx.heading("Gestão de Utilizadores", size="7", margin_bottom="5"),
+            rx.heading("Gestão de Usuários", size="7", margin_bottom="5"),
             rx.text("Cadastre novos indivíduos, atualize credenciais perdidas ou revogue acessos.", color="gray", margin_bottom="5"),
             
             rx.flex(
                 rx.card(
-                    rx.heading("Novo Utilizador", size="4", margin_bottom="4"),
+                    rx.heading("Novo Usuário", size="4", margin_bottom="4"),
                     rx.vstack(
                         rx.input(placeholder="Nome Completo", value=DashboardState.novo_nome, on_change=DashboardState.set_novo_nome),
                         rx.input(placeholder="Código da Tag RFID", value=DashboardState.novo_rfid, on_change=DashboardState.set_novo_rfid),
@@ -28,7 +28,7 @@ def usuarios_page():
                 rx.card(
                     rx.heading("Atualizar Credencial", size="4", margin_bottom="4"),
                     rx.vstack(
-                        rx.input(placeholder="ID do Utilizador", value=DashboardState.update_id, on_change=DashboardState.set_update_id),
+                        rx.input(placeholder="ID do Usuário", value=DashboardState.update_id, on_change=DashboardState.set_update_id),
                         rx.input(placeholder="Nova Tag RFID", value=DashboardState.update_rfid, on_change=DashboardState.set_update_rfid),
                         rx.button("Atualizar Tag", on_click=DashboardState.atualizar_tag, color_scheme="orange", width="100%"),
                         rx.text(DashboardState.msg_update, color="orange", size="2"),

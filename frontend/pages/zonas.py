@@ -24,7 +24,7 @@ def zonas_page():
     return page_layout(
         rx.vstack(
             rx.heading("Zonas e Permissões", size="7", margin_bottom="5"),
-            rx.text("Defina as regras de controle de acesso para os espaços físicos monitorizados.", color="gray", margin_bottom="5"),
+            rx.text("Defina as regras de controle de acesso para as zonas.", color="gray", margin_bottom="5"),
             
             rx.flex(
                 rx.card(
