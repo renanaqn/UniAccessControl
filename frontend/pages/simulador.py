@@ -1,18 +1,15 @@
 import reflex as rx
 
-from components.layout import page_layout
 from states.dashboard_state import DashboardState
 
 def simulador_page():
-    return page_layout(
-        # deixa simulador no meio da tela
-        rx.center(
+    return rx.center(
+        rx.vstack(
             rx.card(
                 rx.vstack(
-                    rx.heading("Simulador de Leitor RFID", size="5", text_align="center"),
-                    rx.text("Interface de testes do hardware da porta.", color="gray", margin_bottom="4"),
+                    rx.heading("Porta Física", size="5", text_align="center"),
+                    rx.text("Simulador de Leitura RFID", color="gray", margin_bottom="4", text_align="center"),
                     
-                    # Painel Visor (Muda de cor dinamicamente)
                     rx.box(
                         rx.vstack(
                             rx.heading(DashboardState.sim_status, size="6", color="white"),
@@ -28,7 +25,6 @@ def simulador_page():
                         margin_bottom="4"
                     ),
                     
-                    # Inputs do Sensor
                     rx.input(placeholder="ID da Zona (Ex: 1 - Lab Eletrônica)", value=DashboardState.sim_zona, on_change=DashboardState.set_sim_zona, size="3"),
                     rx.input(placeholder="Código Lido na Tag", value=DashboardState.sim_rfid, on_change=DashboardState.set_sim_rfid, size="3"),
                     
@@ -44,9 +40,17 @@ def simulador_page():
                 ),
                 width="100%",
                 max_width="450px",
-                padding="6"
+                padding="6",
+                box_shadow="lg"
             ),
-            width="100%",
-            padding_top="10vh"
-        )
+            rx.link(
+                rx.button("Acessar Painel Administrativo", variant="ghost", color_scheme="gray", margin_top="4"),
+                href="/"
+            ),
+            align_items="center"
+        ),
+        width="100%",
+        height="100vh",
+        bg="rgba(0,0,0,0.2)"
+
     )

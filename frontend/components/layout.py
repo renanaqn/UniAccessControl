@@ -1,12 +1,15 @@
 import reflex as rx
 
 from components.sidebar import sidebar
+from states.auth_state import AuthState
 
 def page_layout(*children):
-
     return rx.hstack(
-
-        sidebar(),
+        rx.cond(
+            AuthState.is_authenticated,
+            sidebar(),
+            rx.box(display="none")
+        ),
 
         rx.box(
             *children,

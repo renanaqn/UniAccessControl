@@ -5,6 +5,7 @@ from components.stat_card import stat_card
 from components.log_table import log_table
 
 from states.dashboard_state import DashboardState
+from states.auth_state import AuthState 
 
 def metric_card(title: str, value):
 
@@ -30,77 +31,74 @@ def metric_card(title: str, value):
         width="250px",
     )
 
-@rx.page(
-    route="/",
-    title="UniAcessControl",
-    on_load=DashboardState.carregar_dados
-)
-def dashboard():
+def dashboard_page():
+    return rx.box(
+        page_layout(
 
-    return page_layout(
+            rx.vstack(
 
-        rx.vstack(
-
-            rx.heading(
-                "UniAccessControl",
-                size="8"
-            ),
-
-            rx.text(
-                "Sistema de Controle de Acesso Universitário"
-            ),
-            
-            rx.moment(
-                interval=1000,
-                on_change=DashboardState.carregar_dados
-            ),
-
-            rx.divider(),
-
-            rx.flex(
-
-                metric_card(
-                    "Total de Usuários",
-                    DashboardState.total_usuarios
+                rx.heading(
+                    "UniAccessControl",
+                    size="8"
                 ),
 
-                metric_card(
-                    "Total de Zonas",
-                    DashboardState.total_zonas
+                rx.text(
+                    "Sistema de Controle de Acesso Universitário"
+                ),
+                
+                rx.moment(
+                    interval=1000,
+                    on_change=DashboardState.carregar_dados
                 ),
 
-                metric_card(
-                    "Acessos Aprovados Hoje",
-                    DashboardState.acessos_aprovados_hoje
-                ),
+                rx.divider(),
 
-                metric_card(
-                    "Acessos Negados Hoje",
-                    DashboardState.acessos_negados_hoje
-                ),
+                rx.flex(
 
-                wrap="wrap",
-                spacing="4",
-                width="100%",
-            ),
-
-            rx.card(
-
-                rx.vstack(
-
-                    rx.heading(
-                        "Últimos 10 Logs",
-                        size="5"
+                    metric_card(
+                        "Total de Usuários",
+                        DashboardState.total_usuarios
                     ),
 
-                    log_table(DashboardState.ultimos_logs)
+                    metric_card(
+                        "Total de Zonas",
+                        DashboardState.total_zonas
+                    ),
+
+                    metric_card(
+                        "Acessos Aprovados Hoje",
+                        DashboardState.acessos_aprovados_hoje
+                    ),
+
+                    metric_card(
+                        "Acessos Negados Hoje",
+                        DashboardState.acessos_negados_hoje
+                    ),
+
+                    wrap="wrap",
+                    spacing="4",
+                    width="100%",
+                ),
+
+                rx.card(
+
+                    rx.vstack(
+
+                        rx.heading(
+                            "Últimos 10 Logs",
+                            size="5"
+                        ),
+
+                        log_table(DashboardState.ultimos_logs)
+                    ),
+
+                    width="100%",
                 ),
 
                 width="100%",
-            ),
-
-            width="100%",
-            align="start",
-            spacing="6",
-        )
+                align="start",
+                spacing="6",
+            )
+        ), 
+        on_mount=AuthState.verificar_acesso
     )
