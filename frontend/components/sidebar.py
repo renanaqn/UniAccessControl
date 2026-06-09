@@ -27,6 +27,11 @@ def sidebar():
                 href="/logs"
             ),
 
+            rx.link(
+                rx.button("Simulador de Acesso", width="100%"),
+                href="/simulador"
+            ),
+
             spacing="4",
             align="stretch"
         ),

@@ -6,6 +6,8 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from controle_acesso.database import BancoDeDados
+from controle_acesso.validador import ValidadorAcesso
+from datetime import datetime
 
 class DashboardState(rx.State):
 
@@ -38,6 +40,12 @@ class DashboardState(rx.State):
     regra_fim: str = ""
     msg_regra: str = ""
 
+    sim_rfid: str = ""
+    sim_zona: str = ""
+    sim_status: str = "AGUARDANDO LEITURA"
+    sim_visor: str = "Aproxime a sua tag RFID..."
+    sim_cor_status: str = "gray"
+
 
     # ==========================================
     # SETTERS EXPLÍCITOS (Evita o erro do Python 3.13)
@@ -55,7 +63,9 @@ class DashboardState(rx.State):
     def set_regra_zona(self, v: str): self.regra_zona_id = v
     def set_regra_inicio(self, v: str): self.regra_inicio = v
     def set_regra_fim(self, v: str): self.regra_fim = v
-    # ==========================================
+
+    def set_sim_rfid(self, v: str): self.sim_rfid = v
+    def set_sim_zona(self, v: str): self.sim_zona = v
 
 
     def carregar_dados(self):
@@ -114,3 +124,31 @@ class DashboardState(rx.State):
         except ValueError:
             self.msg_regra = "Erro: IDs precisam ser números válidos!"
 
+    def simular_leitura(self):
+        """Atua como o microcontrolador lendo o sensor e enviando ao DB"""
+        db = BancoDeDados()
+        validador = ValidadorAcesso(db)
+        try:
+            zona_int = int(self.sim_zona)
+
+            hora_agora = datetime.now().strftime('%H:%M:%S')
+            
+            resultado = validador.processar_leitura(self.sim_rfid, zona_int, hora_agora)
+            
+            self.sim_status = resultado['status']
+            self.sim_visor = resultado['mensagem']
+            
+            if self.sim_status == "PERMITIDO":
+                self.sim_cor_status = "green"
+            else:
+                self.sim_cor_status = "red"
+                
+            self.sim_rfid = ""
+            
+            # Recarrega os dados para que a aba de Logs saiba da nova entrada
+            self.carregar_dados()
+            
+        except ValueError:
+            self.sim_status = "ERRO"
+            self.sim_visor = "O ID da Zona precisa ser alfanumérico!"
+            self.sim_cor_status = "orange"
