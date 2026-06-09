@@ -9,7 +9,7 @@ def sidebar():
 
             rx.link(
                 rx.button("Dashboard", width="100%"),
-                href="/"
+                href="/dashboard"
             ),
 
             rx.link(
