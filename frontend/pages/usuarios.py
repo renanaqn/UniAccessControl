@@ -1,7 +1,7 @@
 import reflex as rx
 
 from components.layout import page_layout
-from components.stat_card import stat_card
+from components.ui_components import stat_card
 from components.log_table import log_table
 
 from states.dashboard_state import DashboardState

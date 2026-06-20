@@ -222,10 +222,21 @@ def dashboard_header():
 
     return rx.hstack(
         rx.vstack(
-            rx.heading(
-                "UniAccessControl",
-                size="8",
+            rx.hstack(
+                rx.badge(
+                    rx.icon("shield_check", size=40),
+                    color_scheme="cyan",
+                    variant="soft",
+                    radius="full",
+                    padding="0.55rem",
+                ),
+                rx.heading(
+                    "UniAccessControl",
+                    size="8",
+                ),
+                align="center"
             ),
+            
             rx.text(
                 "Sistema de Controle de Acesso Universitário",
                 color_scheme="gray",
@@ -246,6 +257,41 @@ def dashboard_header():
         wrap="wrap",
     )
 
+def system_summary():
+    return rx.flex(
+        metric_card(
+            "Total de Usuários",
+            DashboardState.total_usuarios,
+            "Usuários Cadastrados",
+            "users",
+            "blue",
+        ),
+        metric_card(
+            "Total de Zonas",
+            DashboardState.total_zonas,
+            "Áreas Cadastradas",
+            "map-pin",
+            "purple",
+        ),
+        metric_card(
+            "Acessos Aprovados Hoje",
+            DashboardState.acessos_aprovados_hoje,
+            DashboardState.percentual_aprovados_label,
+            "circle-check",
+            "green",
+        ),
+        metric_card(
+            "Acessos Negados Hoje",
+            DashboardState.acessos_negados_hoje,
+            DashboardState.percentual_negados_label,
+            "circle-x",
+            "red",
+        ),
+        wrap="wrap",
+        spacing="4",
+        width="100%",
+    )
+
 def dashboard_page():
     return rx.box(
         comp.page_layout(
@@ -263,39 +309,7 @@ def dashboard_page():
 
                 system_status_card(),
 
-                rx.flex(
-                    metric_card(
-                        "Total de Usuários",
-                        DashboardState.total_usuarios,
-                        "Usuários Cadastrados",
-                        "users",
-                        "blue",
-                    ),
-                    metric_card(
-                        "Total de Zonas",
-                        DashboardState.total_zonas,
-                        "Áreas Cadastradas",
-                        "map-pin",
-                        "purple",
-                    ),
-                    metric_card(
-                        "Acessos Aprovados Hoje",
-                        DashboardState.acessos_aprovados_hoje,
-                        DashboardState.percentual_aprovados_label,
-                        "circle-check",
-                        "green",
-                    ),
-                    metric_card(
-                        "Acessos Negados Hoje",
-                        DashboardState.acessos_negados_hoje,
-                        DashboardState.percentual_negados_label,
-                        "circle-x",
-                        "red",
-                    ),
-                    wrap="wrap",
-                    spacing="4",
-                    width="100%",
-                ),
+                system_summary(),
 
                 access_summary_card(),
 

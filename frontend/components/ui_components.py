@@ -3,7 +3,18 @@ import reflex as rx
 def sidebar():
     return rx.box(
         rx.vstack(
-            rx.heading("UniAccessControl", size="6"),
+            rx.vstack(
+                rx.heading("UniAccessControl", size="6"),
+                rx.badge(
+                    rx.icon("shield_check", size=40),
+                    color_scheme="cyan",
+                    variant="soft",
+                    radius="full",
+                    padding="0.55rem",
+                ),
+                align="center"
+            ),
+            
 
             rx.divider(),
 
@@ -40,4 +51,14 @@ def sidebar():
         height="100vh",
         padding="1.5em",
         border_right="1px solid #ddd"
+    )
+
+def stat_card(titulo: str, valor: int):
+
+    return rx.card(
+        rx.vstack(
+            rx.text(titulo),
+            rx.heading(str(valor), size="8")
+        ),
+        width="220px"
     )

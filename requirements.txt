@@ -1,4 +1,4 @@
-reflex==0.9.3
+reflex
 mysql-connector-python
 python-dotenv
 coverage
