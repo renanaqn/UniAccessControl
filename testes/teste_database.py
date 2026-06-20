@@ -76,7 +76,7 @@ class TestBancoDeDados(unittest.TestCase):
         mock_conexao.cursor.return_value = mock_cursor
         
         # Simulando o retorno de funções COUNT (ex: 15 usuários)
-        mock_cursor.fetchone.return_value = (15,)
+        mock_cursor.fetchone.return_value = {'total': 15, 'COUNT(*)': 15, 'count': 15}
         
         db = BancoDeDados()
         # Chama essas funções para já pontuar linhas como "cobertas" no relatório
