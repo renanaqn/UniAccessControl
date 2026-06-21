@@ -1,7 +1,5 @@
 import reflex as rx
 
-import reflex as rx
-
 
 def sidebar_item(
     label: str,
@@ -103,16 +101,15 @@ def sidebar():
 
             rx.vstack(
                 rx.hstack(
-                    rx.badge(
-                        rx.icon(
-                            "shield-check",
-                            size=24,
-                        ),
-                        color_scheme="blue",
-                        variant="soft",
-                        radius="full",
-                        padding="0.6rem",
+
+                    rx.image(
+                        src="/logos/logo security-02.png",
+                        width="36px",
+                        height="36px",
+                        object_fit="contain",
                     ),
+
+
                     rx.vstack(
                         rx.heading(
                             "UniAccess",
@@ -129,6 +126,7 @@ def sidebar():
                         spacing="0",
                         align="start",
                     ),
+
                     align="center",
                     spacing="3",
                     width="100%",
@@ -171,9 +169,9 @@ def sidebar():
                 ),
 
                 sidebar_item(
-                    label="Zonas",
+                    label="Permissões",
                     icon="map-pin",
-                    href="/zonas",
+                    href="/permissoes",
                 ),
 
                 sidebar_item(

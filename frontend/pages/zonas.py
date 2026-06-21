@@ -38,7 +38,7 @@ def zonas_header():
                     variant="soft",
                     color_scheme="purple",
                 ),
-                href="/zonas/regras",
+                href="/permissoes/regras",
             ),
 
             width="100%",

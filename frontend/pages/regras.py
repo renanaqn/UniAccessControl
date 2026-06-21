@@ -39,7 +39,7 @@ def regras_header():
                     variant="soft",
                     color_scheme="purple",
                 ),
-                href="/zonas",
+                href="/permissoes",
             ),
 
             width="100%",

@@ -55,8 +55,8 @@ app.add_page(
 
 app.add_page(
     zonas_page,
-    route="/zonas",
-    title="Zonas",
+    route="/permissoes",
+    title="Permissões",
     on_load=[
         AuthState.verificar_acesso, 
         ZonasState.carregar_dados
@@ -85,7 +85,7 @@ app.add_page(
 
 app.add_page(
     regras_page,
-    route="/zonas/regras",
+    route="/permissoes/regras",
     title="Regras de Acesso | UniAccessControl",
     on_load=[
         AuthState.verificar_acesso,
