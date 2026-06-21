@@ -70,7 +70,7 @@ def dashboard_header():
         rx.hstack(
             rx.hstack(
                 rx.badge(
-                    rx.icon("shield-check", size=38),
+                    rx.icon("layout-dashboard", size=38),
                     color_scheme="sky",
                     variant="soft",
                     radius="full",
