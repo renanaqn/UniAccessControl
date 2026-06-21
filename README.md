@@ -101,8 +101,7 @@ UniAccessControl/│
 │
 ├── database/                        # Camada de Dados
 │   ├── init_db.sql                  # Script inicial de criação e população do banco
-│   ├── incremento_db.sql            # Script de incremento/população adicional
-│   └── views.sql                    # Views utilizadas pelo sistema, como registros de auditoria
+│   └── incremento_db.sql            # Script de incremento/população adicional
 │
 ├── docs/                            # Documentação do Projeto
 │   ├── User_Stories.md              # Histórias de usuário e requisitos do sistema
@@ -113,9 +112,7 @@ UniAccessControl/│
 │   ├── components/                  # Componentes visuais reutilizáveis
 │   ├── frontend/                    # Pacote principal da aplicação Reflex
 │   ├── pages/                       # Telas do sistema
-│   ├── states/                      # Gerenciamento de estado da aplicação Reflex
-│   ├── rxconfig.py                  # Configuração do projeto Reflex
-│   └── requirements.txt             # Dependências específicas do frontend
+│   └── states/                      # Gerenciamento de estado da aplicação Reflex
 │
 ├── testes/                          # Suíte de Testes Automatizados
 ├── requirements.txt                 # Dependências gerais do projeto
