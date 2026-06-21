@@ -64,126 +64,21 @@ class BancoDeDados:
         finally:
             cursor.close()
             conexao.close()
-    
-    def cadastrar_perfil(self, nome_perfil):
-        """Cadastra um novo perfil no banco de dados."""
-        
-        if not nome_perfil or nome_perfil.strip() == "":
-            return False, "Erro: o nome do perfil não pode estar vazio."
-        
-        query = """
-            INSERT INTO perfis (nome_perfil)
-            VALUES (%s)
+
+    def buscar_ultimos_logs(self, limite=10):
+        """Retorna as últimas tentativas de acesso para o Admin visualizar."""
+        query = """        
+            SELECT * 
+            FROM registro
+            ORDER BY data_hora DESC
+            LIMIT %s
         """
-        
         conexao = self.conectar()
-        cursor = conexao.cursor()
+        cursor = conexao.cursor(dictionary=True)
         
         try:
-            cursor.execute(query, (nome_perfil.strip(),))
-            conexao.commit()
-            return True, "Perfil cadastrado com sucesso!"
-        
-        except mysql.connector.IntegrityError:
-            return False, "Erro: já existe um perfil com esse nome."
-        
-        except mysql.connector.Error as err:
-            return False, f"Erro do Banco: {err}"
-        
-        finally:
-            cursor.close()
-            conexao.close()
-
-    def cadastrar_zona(self, nome_zona):
-        """Cadastra uma nova zona no banco de dados."""
-        
-        if not nome_zona or nome_zona.strip() == "":
-            return False, "Erro: o nome da zona não pode estar vazio."
-        
-        query = """
-            INSERT INTO zonas (nome_zona)
-            VALUES (%s)
-        """
-        
-        conexao = self.conectar()
-        cursor = conexao.cursor()
-        
-        try:
-            cursor.execute(query, (nome_zona.strip(),))
-            conexao.commit()
-            return True, "Zona cadastrada com sucesso!"
-        
-        except mysql.connector.IntegrityError:
-            return False, "Erro: já existe uma zona com esse nome."
-        
-        except mysql.connector.Error as err:
-            return False, f"Erro do Banco: {err}"
-        
-        finally:
-            cursor.close()
-            conexao.close()
-    
-    def remover_perfil(self, perfil_id):
-        """Remove um perfil do banco de dados pelo ID."""
-
-        query = """
-            DELETE FROM perfis
-            WHERE id = %s
-        """
-
-        conexao = self.conectar()
-        cursor = conexao.cursor()
-
-        try:
-            cursor.execute(query, (perfil_id,))
-            conexao.commit()
-
-            if cursor.rowcount == 0:
-                return False, "Nenhum perfil encontrado com esse ID."
-
-            return True, "Perfil removido com sucesso!"
-
-        except mysql.connector.IntegrityError:
-            return False, (
-                "Não foi possível remover o perfil. "
-                "Existem usuários ou regras de acesso vinculados a ele."
-            )
-
-        except mysql.connector.Error as err:
-            return False, f"Erro do Banco: {err}"
-
-        finally:
-            cursor.close()
-            conexao.close()
-
-    def remover_zona(self, zona_id):
-        """Remove uma zona do banco de dados pelo ID."""
-
-        query = """
-            DELETE FROM zonas
-            WHERE id = %s
-        """
-
-        conexao = self.conectar()
-        cursor = conexao.cursor()
-
-        try:
-            cursor.execute(query, (zona_id,))
-            conexao.commit()
-
-            if cursor.rowcount == 0:
-                return False, "Nenhuma zona encontrada com esse ID."
-
-            return True, "Zona removida com sucesso!"
-
-        except mysql.connector.IntegrityError:
-            return False, (
-                "Não foi possível remover a zona. "
-                "Existem regras de acesso ou logs vinculados a ela."
-            )
-
-        except mysql.connector.Error as err:
-            return False, f"Erro do Banco: {err}"
+            cursor.execute(query, (limite,))
+            return cursor.fetchall()
 
         finally:
             cursor.close()
@@ -219,6 +114,42 @@ class BancoDeDados:
             usuario["nome"]
             for usuario in resultado
         ]
+    
+    def buscar_usuarios_com_rfid_por_nome(self, texto):
+        """
+        Busca usuários por nome parcial e retorna nome, RFID e perfil.
+        Usado no simulador para exibir 'Nome | Perfil',
+        mas validar internamente pela tag RFID.
+        """
+
+        query = """
+            SELECT 
+                u.id,
+                u.nome,
+                u.rfid_tag,
+                u.perfil_id,
+                p.nome_perfil
+            FROM usuarios u
+            JOIN perfis p ON p.id = u.perfil_id
+            WHERE u.nome LIKE %s
+            ORDER BY u.nome
+            LIMIT 10
+        """
+
+        conexao = self.conectar()
+        cursor = conexao.cursor(dictionary=True)
+
+        try:
+            cursor.execute(query, (f"%{texto}%",))
+            return cursor.fetchall()
+
+        except Exception as err:
+            print(f"Erro ao buscar usuários com RFID: {err}")
+            return []
+
+        finally:
+            cursor.close()
+            conexao.close()
     
     def buscar_logs(self,
                     pagina=1,
@@ -406,114 +337,40 @@ class BancoDeDados:
             cursor.close()
             conexao.close()
     
-    def listar_usuarios(
-        self,
-        pagina=1,
-        limite=5,
-        nome="",
-        rfid="",
-        perfil="TODOS",
-    ):
+    def listar_usuarios(self):
+        """Retorna todos os usuarios cadastrados."""
         query = """
-            SELECT 
-                u.id,
-                u.nome,
-                u.rfid_tag,
-                u.perfil_id,
-                p.nome_perfil
-            FROM usuarios u
-            JOIN perfis p ON p.id = u.perfil_id
-            WHERE 1=1
+            SELECT id, nome, rfid_tag, perfil_id
+            FROM usuarios
         """
-
-        parametros = []
-
-        if nome:
-            query += " AND u.nome LIKE %s"
-            parametros.append(f"%{nome}%")
-
-        if rfid:
-            query += " AND u.rfid_tag LIKE %s"
-            parametros.append(f"%{rfid}%")
-
-        if perfil != "TODOS":
-            query += " AND p.nome_perfil = %s"
-            parametros.append(perfil)
-
-        query += """
-            ORDER BY u.nome
-            LIMIT %s OFFSET %s
-        """
-
-        offset = (pagina - 1) * limite
-        parametros.extend([limite, offset])
-
+        
         conexao = self.conectar()
         cursor = conexao.cursor(dictionary=True)
-
+        
         try:
-            cursor.execute(query, parametros)
+            cursor.execute(query)
             return cursor.fetchall()
         finally:
             cursor.close()
             conexao.close()
     
-    def listar_regras(
-        self, 
-        pagina = 1, 
-        limite = 5,
-        perfil = "TODOS",
-        zona = "Todas",
-        hora_inicio = "",
-        hora_fim = "",
-    ):
+    def listar_regras(self):
         """Retorna as regras de acesso"""
         
         query = """
             SELECT
-                r.perfil_id,
-                p.nome_perfil,
-                r.zona_id,
-                z.nome_zona,
-                r.hora_inicio,
-                r.hora_fim
-            FROM regras_acesso r
-            JOIN perfis p ON p.id = r.perfil_id
-            JOIN zonas z ON z.id = r.zona_id
-            WHERE 1=1
+                perfil_id,
+                zona_id,
+                hora_inicio,
+                hora_fim
+            FROM regras_acesso
         """
-        
-        parametros = []
-
-        if perfil != "TODOS":
-            query += " AND p.nome_perfil = %s"
-            parametros.append(perfil)
-
-        if zona != "Todas":
-            query += " AND z.nome_zona = %s"
-            parametros.append(zona)
-
-        if hora_inicio:
-            query += " AND r.hora_inicio >= %s"
-            parametros.append(hora_inicio)
-
-        if hora_fim:
-            query += " AND r.hora_fim <= %s"
-            parametros.append(hora_fim)
-
-        query += """
-            ORDER BY p.nome_perfil, z.nome_zona
-            LIMIT %s OFFSET %s
-        """
-
-        offset = (pagina - 1) * limite
-        parametros.extend([limite, offset])
         
         conexao = self.conectar()
         cursor = conexao.cursor(dictionary=True)
         
         try:
-            cursor.execute(query, parametros)
+            cursor.execute(query)
             return cursor.fetchall()
         finally:
             cursor.close()
@@ -555,88 +412,6 @@ class BancoDeDados:
             cursor.close()
             conexao.close()
     
-    def contar_usuarios_filtrados(
-        self,
-        nome="",
-        rfid="",
-        perfil="TODOS",
-    ):
-        query = """
-            SELECT COUNT(*) AS total
-            FROM usuarios u
-            JOIN perfis p ON p.id = u.perfil_id
-            WHERE 1=1
-        """
-
-        parametros = []
-
-        if nome:
-            query += " AND u.nome LIKE %s"
-            parametros.append(f"%{nome}%")
-
-        if rfid:
-            query += " AND u.rfid_tag LIKE %s"
-            parametros.append(f"%{rfid}%")
-
-        if perfil != "TODOS":
-            query += " AND p.nome_perfil = %s"
-            parametros.append(perfil)
-
-        conexao = self.conectar()
-        cursor = conexao.cursor(dictionary=True)
-
-        try:
-            cursor.execute(query, parametros)
-            resultado = cursor.fetchone()
-            return resultado["total"]
-        finally:
-            cursor.close()
-            conexao.close()
-    
-    def contar_regras_filtradas(
-        self,
-        perfil="TODOS",
-        zona="Todas",
-        hora_inicio="",
-        hora_fim="",
-    ):
-        query = """
-            SELECT COUNT(*) AS total
-            FROM regras_acesso r
-            JOIN perfis p ON p.id = r.perfil_id
-            JOIN zonas z ON z.id = r.zona_id
-            WHERE 1=1
-        """
-
-        parametros = []
-
-        if perfil != "TODOS":
-            query += " AND p.nome_perfil = %s"
-            parametros.append(perfil)
-
-        if zona != "Todas":
-            query += " AND z.nome_zona = %s"
-            parametros.append(zona)
-
-        if hora_inicio:
-            query += " AND r.hora_inicio >= %s"
-            parametros.append(hora_inicio)
-
-        if hora_fim:
-            query += " AND r.hora_fim <= %s"
-            parametros.append(hora_fim)
-
-        conexao = self.conectar()
-        cursor = conexao.cursor(dictionary=True)
-
-        try:
-            cursor.execute(query, parametros)
-            resultado = cursor.fetchone()
-            return resultado["total"]
-        finally:
-            cursor.close()
-            conexao.close()
-    
     def total_usuarios(self):
         return self._contar_registros("usuarios")
 
@@ -645,9 +420,6 @@ class BancoDeDados:
 
     def total_zonas(self):
         return self._contar_registros("zonas")
-    
-    def total_regras(self):
-        return self._contar_registros("regras_acesso")
     
     def acessos_permitidos_hoje(self):
 

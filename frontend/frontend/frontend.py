@@ -15,6 +15,7 @@ from states.auth_state import AuthState
 from states.zonas_state import ZonasState
 from states.usuarios_tabela_state import UsuariosTabelaState
 from states.regras_state import RegrasState
+from states.simulador_state import SimuladorState
 
 
 app = rx.App()
@@ -68,7 +69,7 @@ app.add_page(
     title="Terminal Porta | UniAccessControl",
     on_load=[
         AuthState.verificar_acesso, 
-        DashboardState.carregar_dados
+        SimuladorState.carregar_dados,
     ]
 )
 

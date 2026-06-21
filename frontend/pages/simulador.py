@@ -155,6 +155,30 @@ def campo_simulador(label: str, placeholder: str, value, on_change, icon: str):
     )
 
 
+def campo_select_zona():
+    return rx.vstack(
+        rx.text(
+            "Zona de acesso",
+            size="2",
+            weight="medium",
+            color_scheme="gray",
+        ),
+
+        rx.select(
+            SimuladorState.zonas_opcoes,
+            value=SimuladorState.sim_zona_nome,
+            placeholder="Selecione uma zona",
+            on_change=SimuladorState.set_sim_zona_nome,
+            width="100%",
+            size="3",
+        ),
+
+        width="100%",
+        align="start",
+        spacing="1",
+    )
+
+
 def formulario_simulador_card():
     return rx.card(
         rx.vstack(
@@ -169,7 +193,7 @@ def formulario_simulador_card():
                 rx.vstack(
                     rx.heading("Leitura RFID", size="5"),
                     rx.text(
-                        "Informe a zona e o código da tag para simular uma passagem.",
+                        "Selecione a zona e o usuário para simular uma tentativa de acesso.",
                         size="2",
                         color_scheme="gray",
                     ),
@@ -183,21 +207,11 @@ def formulario_simulador_card():
 
             rx.divider(),
 
-            campo_simulador(
-                label="Zona de acesso",
-                placeholder="Ex: 1",
-                value=SimuladorState.sim_zona,
-                on_change=SimuladorState.set_sim_zona,
-                icon="map-pin",
-            ),
+            rx.divider(),
 
-            campo_simulador(
-                label="Tag RFID",
-                placeholder="Ex: A1B2C3D4",
-                value=SimuladorState.sim_rfid,
-                on_change=SimuladorState.set_sim_rfid,
-                icon="scan-line",
-            ),
+            campo_select_zona(),
+
+            campo_usuario_autocomplete(),
 
             rx.button(
                 rx.icon("send", size=16),
@@ -219,12 +233,14 @@ def formulario_simulador_card():
 
             width="100%",
             spacing="4",
+            overflow="visible",
         ),
         width="100%",
         min_width="320px",
         max_width="480px",
         flex="1",
         variant="surface",
+        overflow="visible",
     )
 
 
@@ -237,6 +253,108 @@ def simulacao():
         spacing="5",
         wrap="wrap",
         align="stretch",
+    )
+
+
+def campo_usuario_autocomplete():
+    return rx.vstack(
+        rx.text(
+            "Usuário",
+            size="2",
+            weight="medium",
+            color_scheme="gray",
+        ),
+
+        rx.box(
+            rx.input(
+                rx.input.slot(
+                    rx.icon("user", size=16),
+                ),
+                placeholder="Digite o nome do usuário...",
+                value=SimuladorState.sim_usuario_nome,
+                on_change=SimuladorState.definir_usuario,
+                width="100%",
+                size="3",
+            ),
+
+            rx.cond(
+                SimuladorState.usuarios_sugeridos.length() > 0,
+                rx.box(
+                    rx.vstack(
+                        rx.foreach(
+                            SimuladorState.usuarios_sugeridos,
+                            lambda usuario: rx.button(
+                                rx.hstack(
+                                    rx.icon(
+                                        "user-check",
+                                        size=14,
+                                    ),
+
+                                    rx.hstack(
+                                        rx.text(
+                                            usuario["nome"],
+                                            size="2",
+                                            weight="medium",
+                                        ),
+                                        rx.text(
+                                            "|",
+                                            size="2",
+                                            color_scheme="gray",
+                                        ),
+                                        rx.text(
+                                            usuario["nome_perfil"],
+                                            size="2",
+                                            color_scheme="gray",
+                                        ),
+                                        spacing="2",
+                                        align="center",
+                                    ),
+
+                                    align="center",
+                                    spacing="2",
+                                    width="100%",
+                                ),
+                                variant="ghost",
+                                width="100%",
+                                justify="start",
+                                on_click=lambda: SimuladorState.selecionar_usuario(
+                                    usuario["nome"],
+                                    usuario["rfid_tag"],
+                                    usuario["nome_perfil"],
+                                ),
+                            ),
+                        ),
+                        width="100%",
+                        align="stretch",
+                        spacing="1",
+                    ),
+
+                    position="absolute",
+                    top="calc(100% + 0.35rem)",
+                    left="0",
+                    width="100%",
+                    z_index="1000",
+
+                    background="var(--color-panel-solid)",
+                    border="1px solid var(--gray-6)",
+                    border_radius="0.75rem",
+                    box_shadow="0 12px 32px rgba(0, 0, 0, 0.18)",
+
+                    padding="0.5rem",
+                    max_height="180px",
+                    overflow_y="auto",
+                ),
+                rx.fragment(),
+            ),
+
+            width="100%",
+            position="relative",
+            z_index="20",
+        ),
+
+        width="100%",
+        align="start",
+        spacing="1",
     )
 
 
