@@ -64,38 +64,6 @@ class BancoDeDados:
         finally:
             cursor.close()
             conexao.close()
-
-    def buscar_ultimos_logs(self, limite=10, resultado=None):
-        """Retorna as últimas tentativas de acesso para o Admin visualizar."""
-        query = """        
-            SELECT * 
-            FROM registro
-            WHERE 1=1
-        """
-        
-        parametros = []
-        
-        if resultado and resultado != "TODOS":
-            query += " AND resultado = %s"
-            parametros.append(resultado)
-            
-        query += """
-            ORDER BY data_hora DESC
-            LIMIT %s
-        """
-        
-        parametros.append(limite)
-        
-        conexao = self.conectar()
-        cursor = conexao.cursor(dictionary=True)
-        
-        try:
-            cursor.execute(query, parametros)
-            return cursor.fetchall()
-
-        finally:
-            cursor.close()
-            conexao.close()
     
     def buscar_usuarios_por_nome(self, texto):
         """
