@@ -5,7 +5,7 @@ from components.layout import page_layout
 
 
 def simulador_header():
-    return rx.vstack(
+    return rx.card(
         rx.hstack(
             rx.badge(
                 rx.icon("scan-line", size=36),
@@ -31,11 +31,8 @@ def simulador_header():
             spacing="4",
         ),
 
-        rx.divider(),
-
         width="100%",
-        align="start",
-        spacing="4",
+        variant="surface",
     )
 
 

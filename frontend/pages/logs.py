@@ -7,7 +7,7 @@ from states.log_state import LogState
 
 
 def auditoria_header():
-    return rx.vstack(
+    return rx.card(
         rx.hstack(
             rx.hstack(
                 rx.badge(
@@ -49,11 +49,8 @@ def auditoria_header():
             wrap="wrap",
         ),
 
-        rx.divider(),
-
         width="100%",
-        align="start",
-        spacing="4",
+        variant="surface",
     )
 
 

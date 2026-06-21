@@ -6,7 +6,7 @@ from states.auth_state import AuthState
 
 
 def regras_header():
-    return rx.vstack(
+    return rx.card(
         rx.hstack(
             rx.hstack(
                 rx.badge(
@@ -47,10 +47,8 @@ def regras_header():
             spacing="4",
             wrap="wrap",
         ),
-        rx.divider(),
         width="100%",
-        align="start",
-        spacing="4",
+        variant="surface",
     )
 
 
