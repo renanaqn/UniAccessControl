@@ -1,6 +1,6 @@
 import reflex as rx
 
-from components.sidebar import sidebar
+from components.ui_components import sidebar
 from states.auth_state import AuthState
 
 def page_layout(*children):

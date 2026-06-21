@@ -1,6 +1,7 @@
 import reflex as rx
 import sys
 import os
+from datetime import datetime
 
 # Adiciona a raiz do projeto ao sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
@@ -32,6 +33,10 @@ class LogState(rx.State):
     
     filtro_data_inicio: str = ""
     filtro_data_fim: str = ""
+    
+    ultima_atualizacao: str = "Aguardando atualização"
+    banco_status: str = "Não verificado"
+    banco_cor: str = "gray"
     
     # =====================
     # Opções de Filtros
@@ -76,30 +81,44 @@ class LogState(rx.State):
         
         db = BancoDeDados()
         
-        self.logs = db.buscar_logs(
-            pagina=self.pagina,
-            limite=self.limite,
-            usuario=self.filtro_usuario,
-            zona=self.filtro_zona,
-            resultado=self.filtro_resultado,
-            data_inicio=self.filtro_data_inicio or None,
-            data_fim=self.filtro_data_fim or None,
-        )
+        try:
+            self.logs = db.buscar_logs(
+                pagina=self.pagina,
+                limite=self.limite,
+                usuario=self.filtro_usuario,
+                zona=self.filtro_zona,
+                resultado=self.filtro_resultado,
+                data_inicio=self.filtro_data_inicio or None,
+                data_fim=self.filtro_data_fim or None,
+            )
+            
+            total = db.contar_logs(
+                usuario=self.filtro_usuario,
+                zona=self.filtro_zona,
+                resultado=self.filtro_resultado,
+                data_inicio=self.filtro_data_inicio or None,
+                data_fim=self.filtro_data_fim or None,
+            )
+            
+            self.total_paginas = max(
+                1,
+                (total + self.limite - 1) // self.limite
+            )
+            
+            self.zonas = ["Todas"] + [
+                zona["nome_zona"] 
+                for zona in db.listar_zonas()
+            ]
+            
+            self.ultima_atualizacao = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            self.banco_status = "Conectado"
+            self.banco_cor = "green"
         
-        total = db.contar_logs(
-            usuario=self.filtro_usuario,
-            zona=self.filtro_zona,
-            resultado=self.filtro_resultado,
-            data_inicio=self.filtro_data_inicio or None,
-            data_fim=self.filtro_data_fim or None,
-        )
-        
-        self.total_paginas = max(
-            1,
-            (total + self.limite - 1) // self.limite
-        )
-        
-        self.zonas = [zona["nome_zona"] for zona in db.listar_zonas()]
+        except Exception as erro:
+            self.banco_status = "Falha na conexão"
+            self.banco_cor = "red"
+            self.ultima_atualizacao = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            print(f"Erro ao carregar logs de auditoria: {erro}")
     
     # =====================
     # Filtros
