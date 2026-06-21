@@ -11,7 +11,7 @@ def auditoria_header():
     return rx.vstack(
         rx.hstack(
             rx.badge(
-                rx.icon("file-search", size=36),
+                rx.icon("file-text", size=36),
                 color_scheme="orange",
                 variant="soft",
                 radius="full",
@@ -316,6 +316,5 @@ def logs_page():
                 align="start",
                 spacing="5",
             ),
-        ), 
-        on_mount=AuthState.verificar_acesso
+        )
     )   

@@ -8,7 +8,7 @@ def zonas_header():
     return rx.vstack(
         rx.hstack(
             rx.badge(
-                rx.icon("map-pin", size=36),
+                rx.icon("door-open", size=36),
                 color_scheme="purple",
                 variant="soft",
                 radius="full",
@@ -97,9 +97,7 @@ def zonas_page():
 
                 ),
                 width="100%",
-                on_mount=ZonasState.carregar_dados,
             )
-        ),
-        on_mount=AuthState.verificar_acesso
+        )
     )
 

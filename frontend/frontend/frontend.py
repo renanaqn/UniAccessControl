@@ -38,19 +38,19 @@ app.add_page(
     usuarios_page,
     route="/usuarios",
     title="Usuários",
-    on_load=AuthState.verificar_acesso
+    on_load=[AuthState.verificar_acesso]
 )
 
 app.add_page(
     zonas_page,
     route="/zonas",
     title="Zonas",
-    on_load=AuthState.verificar_acesso
+    on_load=[AuthState.verificar_acesso]
 )
 
 app.add_page(
     simulador_page, 
     route="/simulador",
     title="Terminal Porta | UniAccessControl",
-    on_load=DashboardState.carregar_dados
+    on_load=[AuthState.verificar_acesso, DashboardState.carregar_dados]
 )

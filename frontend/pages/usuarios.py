@@ -80,6 +80,5 @@ def usuarios_page():
                     ),
                     width="100%"
                 )
-            ),
-        on_mount=AuthState.verificar_acesso
+            )
     )

@@ -426,8 +426,6 @@ def dashboard_page():
                 width="100%",
                 align="start",
                 spacing="6",
-                on_mount=DashboardState.carregar_dados,
             )
-        ),
-        on_mount=AuthState.verificar_acesso,
+        )
     )
