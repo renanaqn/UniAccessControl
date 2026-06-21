@@ -337,16 +337,216 @@ def perfis_existentes():
     )
 
 
+def feedback_perfil():
+    return rx.cond(
+        ZonasState.msg_perfil != "",
+        rx.callout(
+            ZonasState.msg_perfil,
+            icon="info",
+            color_scheme="green",
+            variant="soft",
+            width="100%",
+            margin_top="0.5rem",
+        ),
+        rx.fragment(),
+    )
+
+
+def feedback_zona():
+    return rx.cond(
+        ZonasState.msg_zona != "",
+        rx.callout(
+            ZonasState.msg_zona,
+            icon="info",
+            color_scheme="purple",
+            variant="soft",
+            width="100%",
+            margin_top="0.5rem",
+        ),
+        rx.fragment(),
+    )
+
+
+def novo_perfil_card():
+    return rx.card(
+        rx.vstack(
+            rx.hstack(
+                rx.badge(
+                    rx.icon("user-plus", size=20),
+                    color_scheme="green",
+                    variant="soft",
+                    radius="full",
+                    padding="0.55rem",
+                ),
+                rx.vstack(
+                    rx.heading("Novo Perfil", size="5"),
+                    rx.text(
+                        "Cadastre um novo grupo de usuários para regras de acesso.",
+                        size="2",
+                        color_scheme="gray",
+                    ),
+                    spacing="0",
+                    align="start",
+                ),
+                align="center",
+                spacing="3",
+                width="100%",
+            ),
+
+            rx.divider(),
+
+            rx.input(
+                rx.input.slot(
+                    rx.icon("users", size=16),
+                ),
+                placeholder="Nome do perfil, ex: Visitante",
+                value=ZonasState.novo_perfil,
+                on_change=ZonasState.set_novo_perfil,
+                width="100%",
+                size="3",
+            ),
+
+            rx.button(
+                rx.icon("plus", size=16),
+                "Adicionar perfil",
+                on_click=ZonasState.adicionar_perfil,
+                color_scheme="green",
+                width="100%",
+                size="3",
+            ),
+
+            feedback_perfil(),
+
+            width="100%",
+            spacing="4",
+        ),
+        width="100%",
+        min_width="280px",
+        flex="1",
+        variant="surface",
+    )
+
+
+def nova_zona_card():
+    return rx.card(
+        rx.vstack(
+            rx.hstack(
+                rx.badge(
+                    rx.icon("map-pin-plus", size=20),
+                    color_scheme="purple",
+                    variant="soft",
+                    radius="full",
+                    padding="0.55rem",
+                ),
+                rx.vstack(
+                    rx.heading("Nova Zona", size="5"),
+                    rx.text(
+                        "Cadastre uma nova área física controlada pelo sistema.",
+                        size="2",
+                        color_scheme="gray",
+                    ),
+                    spacing="0",
+                    align="start",
+                ),
+                align="center",
+                spacing="3",
+                width="100%",
+            ),
+
+            rx.divider(),
+
+            rx.input(
+                rx.input.slot(
+                    rx.icon("map-pin", size=16),
+                ),
+                placeholder="Nome da zona, ex: Laboratório de Redes",
+                value=ZonasState.nova_zona,
+                on_change=ZonasState.set_nova_zona,
+                width="100%",
+                size="3",
+            ),
+
+            rx.button(
+                rx.icon("plus", size=16),
+                "Adicionar zona",
+                on_click=ZonasState.adicionar_zona,
+                color_scheme="purple",
+                width="100%",
+                size="3",
+            ),
+
+            feedback_zona(),
+
+            width="100%",
+            spacing="4",
+        ),
+        width="100%",
+        min_width="280px",
+        flex="1",
+        variant="surface",
+    )
+
+
+def administracao_cadastros():
+    return rx.card(
+        rx.vstack(
+            rx.hstack(
+                rx.badge(
+                    rx.icon("settings-2", size=20),
+                    color_scheme="gray",
+                    variant="soft",
+                    radius="full",
+                    padding="0.55rem",
+                ),
+                rx.vstack(
+                    rx.heading("Administração de Cadastros", size="5"),
+                    rx.text(
+                        "Adicione novos perfis e novas zonas antes de criar regras de acesso.",
+                        size="2",
+                        color_scheme="gray",
+                    ),
+                    spacing="0",
+                    align="start",
+                ),
+                align="center",
+                spacing="3",
+                width="100%",
+            ),
+
+            rx.divider(),
+
+            rx.flex(
+                novo_perfil_card(),
+                nova_zona_card(),
+                width="100%",
+                spacing="4",
+                wrap="wrap",
+                align="stretch",
+            ),
+
+            width="100%",
+            spacing="4",
+        ),
+        width="100%",
+        variant="surface",
+    )
+
+
 def zonas_page():
     return rx.box(
         page_layout(
             rx.vstack(
-                
                 # =========================
                 # Header
                 # =========================
                 
                 zonas_header(),
+
+                # =========================
+                # Cadastro de Perfis e Zonas
+                # =========================
+
+                administracao_cadastros(),
 
                 rx.flex(
                     
@@ -355,6 +555,7 @@ def zonas_page():
                     # =========================
                     
                     regras_horario(),
+
                     rx.vstack(
                         
                         # =========================

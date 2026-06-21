@@ -65,6 +65,65 @@ class BancoDeDados:
             cursor.close()
             conexao.close()
     
+    def cadastrar_perfil(self, nome_perfil):
+        """Cadastra um novo perfil no banco de dados."""
+        
+        if not nome_perfil or nome_perfil.strip() == "":
+            return False, "Erro: o nome do perfil não pode estar vazio."
+        
+        query = """
+            INSERT INTO perfis (nome_perfil)
+            VALUES (%s)
+        """
+        
+        conexao = self.conectar()
+        cursor = conexao.cursor()
+        
+        try:
+            cursor.execute(query, (nome_perfil.strip(),))
+            conexao.commit()
+            return True, "Perfil cadastrado com sucesso!"
+        
+        except mysql.connector.IntegrityError:
+            return False, "Erro: já existe um perfil com esse nome."
+        
+        except mysql.connector.Error as err:
+            return False, f"Erro do Banco: {err}"
+        
+        finally:
+            cursor.close()
+            conexao.close()
+
+
+    def cadastrar_zona(self, nome_zona):
+        """Cadastra uma nova zona no banco de dados."""
+        
+        if not nome_zona or nome_zona.strip() == "":
+            return False, "Erro: o nome da zona não pode estar vazio."
+        
+        query = """
+            INSERT INTO zonas (nome_zona)
+            VALUES (%s)
+        """
+        
+        conexao = self.conectar()
+        cursor = conexao.cursor()
+        
+        try:
+            cursor.execute(query, (nome_zona.strip(),))
+            conexao.commit()
+            return True, "Zona cadastrada com sucesso!"
+        
+        except mysql.connector.IntegrityError:
+            return False, "Erro: já existe uma zona com esse nome."
+        
+        except mysql.connector.Error as err:
+            return False, f"Erro do Banco: {err}"
+        
+        finally:
+            cursor.close()
+            conexao.close()
+    
     def buscar_usuarios_por_nome(self, texto):
         """
         Buscar usuários por nome parcial
