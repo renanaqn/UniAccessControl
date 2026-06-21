@@ -1,7 +1,29 @@
 # UniAccessControl
-> Repositório para o Projeto das disciplinas DCA3603 - Engenharia de Software e DCA3604 - Banco de Dados
 
-O **UniAccessControl** é um sistema completo de controle de acesso físico, projetado para gerenciar a entrada e saída de indivíduos em zonas restritas de uma instituição. O projeto simula a integração de um hardware de leitura na ponta (como um totem RFID) com um painel de controle administrativo web.
+> **Este repositório é um fork** do projeto **UniAccessControl**, originalmente hospedado em:
+> https://github.com/renanaqn/UniAccessControl
+
+O **UniAccessControl** é um sistema de controle de acesso desenvolvido em grupo para a disciplina de Banco de Dados. O sistema utiliza RFID, MySQL e Reflex para validar permissões de usuários, registrar logs de auditoria e fornecer uma interface web administrativa.
+
+## Créditos
+
+Este projeto foi desenvolvido em grupo.
+O repositório original está disponível em:
+
+https://github.com/renanaqn/UniAccessControl
+
+## Sobre este fork
+
+Este fork foi criado para registrar e organizar minhas contribuições ao projeto, incluindo ajustes, melhorias e documentação complementar.
+
+Minhas principais contribuições envolveram:
+
+* Desenvolvimento e melhoria da interface web com Reflex;
+* Organização de páginas, componentes e estados;
+* Integração com o banco de dados MySQL;
+* Implementação de filtros, paginação e auditoria;
+* Melhorias no simulador de acesso;
+* Ampliação dos testes automatizados.
 
 ## Índice
 
