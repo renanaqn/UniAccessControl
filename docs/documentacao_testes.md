@@ -9,12 +9,20 @@ Para garantir que os testes fossem isolados, rápidos e não dependessem do esta
 Com isso, utilizamos a biblioteca `unittest.mock` (especificamente o `MagicMock`) para criar um "banco de dados falso". Isso nos permitiu simular diferentes retornos do banco e focar exclusivamente em testar a lógica de decisão do validador.
 
 ## Cenários de Teste Implementados
-Foram desenvolvidos três casos de teste principais para validar as regras de acesso:
 
-* **Acesso Permitido dentro do Horário:** Valida se o sistema autoriza um usuário válido cuja tag está cadastrada e a tentativa ocorre dentro da janela de horário permitida pela regra da zona.
-* **Acesso Negado por Tag Desconhecida:** Simula uma tentativa de invasão com um cartão não cadastrado. Valida se o sistema bloqueia o acesso e se registra a tentativa falha usando o número da tag desconhecida para fins de auditoria.
-* **Acesso Negado Fora do Horário:** Simula um usuário válido tentando entrar em uma zona fora do seu horário de permissão. Valida se o sistema bloqueia corretamente a porta com a mensagem de restrição temporal.
-* **Operações de Banco de Dados (CRUD):** Utilizando o decorador @patch, interceptamos a conexão com o MySQL para simular falhas de integridade e sucessos nas operações de cadastro, listagem e remoção, validando a classe BancoDeDados sem afetar tabelas reais.
+Foram desenvolvidos testes de unidade para validar tanto as regras de negócio do sistema quanto as operações principais da camada de banco de dados:
+
+* **Acesso Permitido dentro do Horário:** Valida se o sistema autoriza corretamente um usuário com tag RFID cadastrada, permissão para a zona solicitada e tentativa realizada dentro da janela de horário permitida. Também verifica se o log é registrado como `PERMITIDO`.
+* **Acesso Negado por Tag Desconhecida ou Sem Permissão:** Simula uma tentativa de acesso em que a tag RFID não possui permissão para a zona informada. Valida se o acesso é negado e se a tentativa é registrada na auditoria com o motivo adequado.
+* **Acesso Negado Fora do Horário:** Simula um usuário válido tentando acessar uma zona fora do horário permitido. Valida se o sistema bloqueia o acesso e registra o log como `NEGADO`, com motivo relacionado à restrição de horário.
+* **Casos de Borda da Janela de Horário:** Valida tentativas realizadas exatamente no horário inicial e final permitido, garantindo que esses limites sejam aceitos. Também testa acessos imediatamente antes do horário inicial e após o horário final, que devem ser negados.
+* **Formato de Horário Inválido:** Verifica se o sistema trata corretamente entradas de horário em formato inválido, impedindo a execução da validação e evitando o registro incorreto de logs.
+* **Operações de Usuários:** Testa o cadastro, atualização de tag RFID, remoção, listagem com filtros e contagem paginada de usuários. Também valida buscas por nome e buscas utilizadas no autocomplete do simulador, incluindo RFID e perfil.
+* **Operações de Perfis e Zonas:** Testa a listagem, cadastro e remoção de perfis e zonas. Também são verificados cenários de erro, como nomes vazios, duplicidade e tentativa de remoção de registros vinculados a usuários, regras ou logs.
+* **Operações de Regras de Acesso:** Valida a criação e atualização de regras de acesso, além da listagem e contagem com filtros por perfil, zona e intervalo de horário.
+* **Operações de Logs e Auditoria:** Testa o registro de logs, a busca dos últimos acessos, a filtragem de logs por usuário, zona, resultado e datas, além da contagem usada na paginação da página de auditoria.
+* **Métricas do Dashboard:** Valida as funções responsáveis por retornar totais de usuários, perfis, zonas e acessos permitidos ou negados no dia atual.
+* **Operações de Banco de Dados com Mock:** Utilizando o decorador `@patch`, a conexão real com o MySQL é interceptada. Assim, os testes simulam sucessos, falhas de banco e erros de integridade sem alterar tabelas reais.
 
 ## Como os testes foram executados
 Para reproduzir os testes localmente e verificar a cobertura do código, utilizamos a biblioteca `coverage`. No terminal, a partir da raiz do projeto, execute os seguintes comandos:
@@ -32,3 +40,4 @@ coverage report -m
 Com isso, todos os fluxos condicionais (if/else) das regras de negócio foram validados, e a cobertura global exigida foi superada, conforme ilustrado no relatório abaixo:
 
 ![Print Coverage](../assets/tests_coverage.png)
+

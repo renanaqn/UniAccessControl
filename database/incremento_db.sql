@@ -94,3 +94,19 @@ INSERT INTO usuarios (nome, rfid_tag, perfil_id) VALUES
 ('Eduardo Braga',    'Y2Z3A4B5', 5),
 ('Priscila Moraes',  'Z3A4B5C6', 5),
 ('Mateus Farias',    'A4B5C6D7', 5);
+
+-- ==========================================
+-- Criação de View
+-- ==========================================
+
+DROP VIEW IF EXISTS registro;
+CREATE VIEW registro AS
+	SELECT 
+		a.data_hora, 
+		u.nome, 
+		z.nome_zona, 
+		a.resultado, 
+		a.motivo 
+	FROM auditoria_logs AS a
+	INNER JOIN usuarios AS u ON u.rfid_tag = a.rfid_tentativa
+	INNER JOIN zonas as z ON z.id = a.zona_id

@@ -91,24 +91,35 @@ Credenciais de Teste (Administrador):
 A arquitetura do projeto aplica o princípio de Separation of Concerns (Separação de Responsabilidades), dividindo o banco de dados, as regras de negócio e a interface do usuário.
 
 ```
-UniAccessControl/
-├── controle_acesso/        # Camada de Regras de Negócio e Persistência
-│   ├── database.py         # Conexão com MySQL e queries (CRUD)
-│   ├── validador.py        # Validação de horários, perfis e permissões
-│   └── main.py             # Script de teste em terminal (CLI)
-├── database/               # Camada de Dados
-│   ├── init_db.sql         # Script DDL/DML de inicialização
-│   └── incremento_db.sql   # Script DDL/DML de incremento de dados     
-├── docs/                   # Documentação do Projeto
-│   └── User_Stories.md     # Levantamento de Requisitos e Histórias de Usuário
-├── frontend/               # Camada de Apresentação (Reflex App)
-│   ├── components/         # Componentes visuais reaproveitáveis (Ex: Sidebar)
-│   ├── pages/              # Telas do sistema (Login, Dashboard, Simulador, etc.)
-│   ├── states/             # Gerenciamento de Estado (Auth, Variáveis de Tela)
-│   └── frontend.py         # Arquivo principal do reflex
-├── testes/                 # Suíte de Testes Automatizados
-├── requirements.txt        # Dependências do projeto
-└── README.md               # Documentação principal
+UniAccessControl/│
+├── controle_acesso/                 # Camada de Regras de Negócio e Persistência
+│   ├── __init__.py
+│   ├── database.py                  # Conexão com MySQL e operações de banco de dados
+│   ├── validador.py                 # Validação de permissões, horários e acesso
+│   ├── simular_acesso.py            # Simulador contínuo de acessos via terminal
+│   └── main.py                      # Script principal para testes/execução em terminal
+│
+├── database/                        # Camada de Dados
+│   ├── init_db.sql                  # Script inicial de criação e população do banco
+│   ├── incremento_db.sql            # Script de incremento/população adicional
+│   └── views.sql                    # Views utilizadas pelo sistema, como registros de auditoria
+│
+├── docs/                            # Documentação do Projeto
+│   ├── User_Stories.md              # Histórias de usuário e requisitos do sistema
+│   └── documentacao_testes.md       # Documentação da estratégia e execução dos testes
+│
+├── frontend/                        # Camada de Apresentação - Reflex App
+│   ├── assets/                      # Arquivos estáticos usados pela interface
+│   ├── components/                  # Componentes visuais reutilizáveis
+│   ├── frontend/                    # Pacote principal da aplicação Reflex
+│   ├── pages/                       # Telas do sistema
+│   ├── states/                      # Gerenciamento de estado da aplicação Reflex
+│   ├── rxconfig.py                  # Configuração do projeto Reflex
+│   └── requirements.txt             # Dependências específicas do frontend
+│
+├── testes/                          # Suíte de Testes Automatizados
+├── requirements.txt                 # Dependências gerais do projeto
+└── README.md                        # Documentação principal
 ```
 
 ## Licença
