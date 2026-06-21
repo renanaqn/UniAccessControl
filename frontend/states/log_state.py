@@ -105,7 +105,10 @@ class LogState(rx.State):
                 (total + self.limite - 1) // self.limite
             )
             
-            self.zonas = [zona["nome_zona"] for zona in db.listar_zonas()]
+            self.zonas = ["Todas"] + [
+                zona["nome_zona"] 
+                for zona in db.listar_zonas()
+            ]
             
             self.ultima_atualizacao = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             self.banco_status = "Conectado"
@@ -115,7 +118,7 @@ class LogState(rx.State):
             self.banco_status = "Falha na conexão"
             self.banco_cor = "red"
             self.ultima_atualizacao = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-            print(f"Erro ao carregar dados do dashboard: {erro}")
+            print(f"Erro ao carregar logs de auditoria: {erro}")
     
     # =====================
     # Filtros
