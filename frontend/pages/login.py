@@ -224,7 +224,17 @@ def login_form_panel():
 
 def login_page():
     return rx.flex(
+        
+        # =========================
+        # Painel
+        # =========================
+        
         login_brand_panel(),
+        
+        # =========================
+        # Login
+        # =========================
+        
         login_form_panel(),
         width="100%",
         min_height="100vh",

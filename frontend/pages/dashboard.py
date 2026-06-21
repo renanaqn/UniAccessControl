@@ -226,7 +226,7 @@ def dashboard_header():
             rx.hstack(
                 rx.badge(
                     rx.icon("shield_check", size=36),
-                    color="white",
+                    color_scheme="sky",
                     variant="soft",
                     radius="full",
                     padding="0.65rem",
