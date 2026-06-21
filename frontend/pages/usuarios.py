@@ -37,7 +37,7 @@ def usuarios_header():
             rx.link(
                 rx.button(
                     rx.icon("table", size=16),
-                    "Ver usuários cadastradas",
+                    "Ver usuários cadastrados",
                     variant="soft",
                     color_scheme="purple",
                 ),

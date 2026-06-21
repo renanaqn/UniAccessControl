@@ -94,7 +94,6 @@ class BancoDeDados:
             cursor.close()
             conexao.close()
 
-
     def cadastrar_zona(self, nome_zona):
         """Cadastra uma nova zona no banco de dados."""
         
@@ -120,6 +119,72 @@ class BancoDeDados:
         except mysql.connector.Error as err:
             return False, f"Erro do Banco: {err}"
         
+        finally:
+            cursor.close()
+            conexao.close()
+    
+    def remover_perfil(self, perfil_id):
+        """Remove um perfil do banco de dados pelo ID."""
+
+        query = """
+            DELETE FROM perfis
+            WHERE id = %s
+        """
+
+        conexao = self.conectar()
+        cursor = conexao.cursor()
+
+        try:
+            cursor.execute(query, (perfil_id,))
+            conexao.commit()
+
+            if cursor.rowcount == 0:
+                return False, "Nenhum perfil encontrado com esse ID."
+
+            return True, "Perfil removido com sucesso!"
+
+        except mysql.connector.IntegrityError:
+            return False, (
+                "Não foi possível remover o perfil. "
+                "Existem usuários ou regras de acesso vinculados a ele."
+            )
+
+        except mysql.connector.Error as err:
+            return False, f"Erro do Banco: {err}"
+
+        finally:
+            cursor.close()
+            conexao.close()
+
+    def remover_zona(self, zona_id):
+        """Remove uma zona do banco de dados pelo ID."""
+
+        query = """
+            DELETE FROM zonas
+            WHERE id = %s
+        """
+
+        conexao = self.conectar()
+        cursor = conexao.cursor()
+
+        try:
+            cursor.execute(query, (zona_id,))
+            conexao.commit()
+
+            if cursor.rowcount == 0:
+                return False, "Nenhuma zona encontrada com esse ID."
+
+            return True, "Zona removida com sucesso!"
+
+        except mysql.connector.IntegrityError:
+            return False, (
+                "Não foi possível remover a zona. "
+                "Existem regras de acesso ou logs vinculados a ela."
+            )
+
+        except mysql.connector.Error as err:
+            return False, f"Erro do Banco: {err}"
+
         finally:
             cursor.close()
             conexao.close()

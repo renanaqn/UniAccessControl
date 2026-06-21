@@ -29,6 +29,18 @@ class ZonasState(rx.State):
     msg_perfil: str = ""
     msg_zona: str = ""
     
+    delete_perfil_id: str = ""
+    delete_zona_id: str = ""
+
+    msg_delete_perfil: str = ""
+    msg_delete_zona: str = ""
+    
+    def set_delete_perfil_id(self, v: str):
+        self.delete_perfil_id = v
+
+    def set_delete_zona_id(self, v: str):
+        self.delete_zona_id = v
+    
     def set_novo_perfil(self, v: str):
         self.novo_perfil = v
 
@@ -115,6 +127,73 @@ class ZonasState(rx.State):
             await asyncio.sleep(3)
             
             self.msg_zona = ""
+            yield
+    
+    async def remover_perfil(self):
+        """Remove um perfil pelo ID."""
+
+        db = BancoDeDados()
+
+        try:
+            sucesso, msg = db.remover_perfil(
+                int(self.delete_perfil_id)
+            )
+
+            self.msg_delete_perfil = msg
+
+            if sucesso:
+                self.delete_perfil_id = ""
+                self.carregar_dados()
+
+            yield
+
+            await asyncio.sleep(3)
+
+            self.msg_delete_perfil = ""
+            yield
+
+        except ValueError:
+            self.msg_delete_perfil = "Erro: o ID do perfil precisa ser um número válido."
+
+            yield
+
+            await asyncio.sleep(3)
+
+            self.msg_delete_perfil = ""
+            yield
+
+
+    async def remover_zona(self):
+        """Remove uma zona pelo ID."""
+
+        db = BancoDeDados()
+
+        try:
+            sucesso, msg = db.remover_zona(
+                int(self.delete_zona_id)
+            )
+
+            self.msg_delete_zona = msg
+
+            if sucesso:
+                self.delete_zona_id = ""
+                self.carregar_dados()
+
+            yield
+
+            await asyncio.sleep(3)
+
+            self.msg_delete_zona = ""
+            yield
+
+        except ValueError:
+            self.msg_delete_zona = "Erro: o ID da zona precisa ser um número válido."
+
+            yield
+
+            await asyncio.sleep(3)
+
+            self.msg_delete_zona = ""
             yield
 
     def salvar_regra(self):

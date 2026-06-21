@@ -532,6 +532,215 @@ def administracao_cadastros():
     )
 
 
+def feedback_delete_perfil():
+    return rx.cond(
+        ZonasState.msg_delete_perfil != "",
+        rx.callout(
+            ZonasState.msg_delete_perfil,
+            icon="triangle-alert",
+            color_scheme="red",
+            variant="soft",
+            width="100%",
+            margin_top="0.5rem",
+        ),
+        rx.fragment(),
+    )
+
+
+def feedback_delete_zona():
+    return rx.cond(
+        ZonasState.msg_delete_zona != "",
+        rx.callout(
+            ZonasState.msg_delete_zona,
+            icon="triangle-alert",
+            color_scheme="red",
+            variant="soft",
+            width="100%",
+            margin_top="0.5rem",
+        ),
+        rx.fragment(),
+    )
+
+
+def remover_perfil_card():
+    return rx.card(
+        rx.vstack(
+            rx.hstack(
+                rx.badge(
+                    rx.icon("user-minus", size=20),
+                    color_scheme="red",
+                    variant="soft",
+                    radius="full",
+                    padding="0.55rem",
+                ),
+                rx.vstack(
+                    rx.heading("Remover Perfil", size="5"),
+                    rx.text(
+                        "Remova um perfil que não esteja vinculado a usuários ou regras.",
+                        size="2",
+                        color_scheme="gray",
+                    ),
+                    spacing="0",
+                    align="start",
+                ),
+                align="center",
+                spacing="3",
+                width="100%",
+            ),
+
+            rx.divider(),
+
+            rx.callout(
+                "A remoção será bloqueada se houver usuários ou regras usando esse perfil.",
+                icon="triangle-alert",
+                color_scheme="red",
+                variant="soft",
+                width="100%",
+            ),
+
+            rx.input(
+                rx.input.slot(
+                    rx.icon("hash", size=16),
+                ),
+                placeholder="ID do perfil",
+                value=ZonasState.delete_perfil_id,
+                on_change=ZonasState.set_delete_perfil_id,
+                width="100%",
+                size="3",
+            ),
+
+            rx.button(
+                rx.icon("trash-2", size=16),
+                "Remover perfil",
+                on_click=ZonasState.remover_perfil,
+                color_scheme="red",
+                width="100%",
+                size="3",
+            ),
+
+            feedback_delete_perfil(),
+
+            width="100%",
+            spacing="4",
+        ),
+        width="100%",
+        min_width="280px",
+        flex="1",
+        variant="surface",
+    )
+
+
+def remover_zona_card():
+    return rx.card(
+        rx.vstack(
+            rx.hstack(
+                rx.badge(
+                    rx.icon("map-pin-off", size=20),
+                    color_scheme="red",
+                    variant="soft",
+                    radius="full",
+                    padding="0.55rem",
+                ),
+                rx.vstack(
+                    rx.heading("Remover Zona", size="5"),
+                    rx.text(
+                        "Remova uma zona que não esteja vinculada a regras ou logs.",
+                        size="2",
+                        color_scheme="gray",
+                    ),
+                    spacing="0",
+                    align="start",
+                ),
+                align="center",
+                spacing="3",
+                width="100%",
+            ),
+
+            rx.divider(),
+
+            rx.callout(
+                "A remoção será bloqueada se houver regras ou logs vinculados a essa zona.",
+                icon="triangle-alert",
+                color_scheme="red",
+                variant="soft",
+                width="100%",
+            ),
+
+            rx.input(
+                rx.input.slot(
+                    rx.icon("hash", size=16),
+                ),
+                placeholder="ID da zona",
+                value=ZonasState.delete_zona_id,
+                on_change=ZonasState.set_delete_zona_id,
+                width="100%",
+                size="3",
+            ),
+
+            rx.button(
+                rx.icon("trash-2", size=16),
+                "Remover zona",
+                on_click=ZonasState.remover_zona,
+                color_scheme="red",
+                width="100%",
+                size="3",
+            ),
+
+            feedback_delete_zona(),
+
+            width="100%",
+            spacing="4",
+        ),
+        width="100%",
+        min_width="280px",
+        flex="1",
+        variant="surface",
+    )
+    
+def administracao_remocoes():
+    return rx.card(
+        rx.vstack(
+            rx.hstack(
+                rx.badge(
+                    rx.icon("trash-2", size=20),
+                    color_scheme="red",
+                    variant="soft",
+                    radius="full",
+                    padding="0.55rem",
+                ),
+                rx.vstack(
+                    rx.heading("Remoção de Cadastros", size="5"),
+                    rx.text(
+                        "Remova perfis e zonas somente quando não houver vínculos ativos.",
+                        size="2",
+                        color_scheme="gray",
+                    ),
+                    spacing="0",
+                    align="start",
+                ),
+                align="center",
+                spacing="3",
+                width="100%",
+            ),
+
+            rx.divider(),
+
+            rx.flex(
+                remover_perfil_card(),
+                remover_zona_card(),
+                width="100%",
+                spacing="4",
+                wrap="wrap",
+                align="stretch",
+            ),
+
+            width="100%",
+            spacing="4",
+        ),
+        width="100%",
+        variant="surface",
+    )
+    
 def zonas_page():
     return rx.box(
         page_layout(
@@ -543,10 +752,11 @@ def zonas_page():
                 zonas_header(),
 
                 # =========================
-                # Cadastro de Perfis e Zonas
+                # Cadastro e Remoção de Perfis e Zonas
                 # =========================
 
                 administracao_cadastros(),
+                administracao_remocoes(),
 
                 rx.flex(
                     
