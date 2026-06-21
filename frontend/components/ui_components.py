@@ -5,7 +5,7 @@ def sidebar():
         rx.vstack(
             # Header com logo
             rx.hstack(
-                rx.icon("shield", size=24, color="white"),
+                rx.icon("shield_check", size=24, color="white"),
                 rx.heading("UniAccessControl", size="5", color="white"),
                 align="center",
                 spacing="3",

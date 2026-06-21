@@ -226,7 +226,7 @@ def dashboard_header():
             rx.hstack(
                 rx.badge(
                     rx.icon("shield_check", size=36),
-                    color_scheme="cyan",
+                    color="white",
                     variant="soft",
                     radius="full",
                     padding="0.65rem",
@@ -406,20 +406,34 @@ def dashboard_page():
     return rx.box(
         comp.page_layout(
             rx.vstack(
+                # =========================
+                # Header
+                # =========================
+                
                 dashboard_header(),
 
-                # Atualiza os dados periodicamente, sem sobrecarregar o banco a cada 1 segundo.
                 rx.moment(
                     interval=5000,
                     on_change=DashboardState.carregar_dados,
                     display="none",
                 ),
+                
+                # =========================
+                # Status
+                # =========================
 
                 system_status_card(),
+                
+                # =========================
+                # Summary
+                # =========================
 
                 system_summary(),
-
                 access_summary_card(),
+                
+                # =========================
+                # Auditoria resumida
+                # =========================
 
                 resumo_auditoria(),
 

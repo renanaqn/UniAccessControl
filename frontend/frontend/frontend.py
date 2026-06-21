@@ -10,6 +10,7 @@ from pages.login import login_page
 from states.dashboard_state import DashboardState
 from states.log_state import LogState
 from states.auth_state import AuthState
+from states.zonas_state import ZonasState
 
 
 app = rx.App()
@@ -45,7 +46,7 @@ app.add_page(
     zonas_page,
     route="/zonas",
     title="Zonas",
-    on_load=[AuthState.verificar_acesso]
+    on_load=[AuthState.verificar_acesso, ZonasState.carregar_dados]
 )
 
 app.add_page(
