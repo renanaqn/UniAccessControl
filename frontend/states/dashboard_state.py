@@ -11,7 +11,7 @@ from controle_acesso.database import BancoDeDados
 
 
 class DashboardState(rx.State):
-    """Estado usado pela página principal do dashboard."""
+    """Estado usado somente pela página principal do dashboard."""
 
     total_usuarios: int = 0
     total_zonas: int = 0
@@ -19,7 +19,8 @@ class DashboardState(rx.State):
     acessos_aprovados_hoje: int = 0
     acessos_negados_hoje: int = 0
 
-    ultimos_logs: list[dict] = []
+    ultimos_permitidos: list[dict] = []
+    ultimos_negados: list[dict] = []
 
     ultima_atualizacao: str = "Aguardando atualização"
     status_sistema: str = "Carregando"
@@ -105,7 +106,8 @@ class DashboardState(rx.State):
 
             self.total_usuarios = db.total_usuarios()
             self.total_zonas = db.total_zonas()
-            self.ultimos_logs = db.buscar_ultimos_logs(10)
+            self.ultimos_permitidos = db.buscar_logs(limite=10, resultado="PERMITIDO")
+            self.ultimos_negados = db.buscar_logs(limite=10, resultado="NEGADO")
             self.acessos_aprovados_hoje = db.acessos_permitidos_hoje()
             self.acessos_negados_hoje = db.acessos_negados_hoje()
 

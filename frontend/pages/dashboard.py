@@ -1,7 +1,7 @@
 import reflex as rx
 
 import components.layout as comp
-from components.log_table import log_table
+from components.log_table import log_table_parcial
 
 from states.dashboard_state import DashboardState
 from states.auth_state import AuthState 
@@ -61,10 +61,11 @@ def system_status_card():
             rx.hstack(
                 rx.heading("Status do Sistema", size="5"),
                 rx.spacer(),
-                rx.badge(
-                    DashboardState.status_sistema,
-                    color_scheme=DashboardState.status_cor,
+                rx.button(
+                    rx.icon("refresh-cw", size=16),
+                    "Atualizar",
                     variant="soft",
+                    on_click=DashboardState.carregar_dados,
                 ),
                 width="100%",
                 align="center",
@@ -224,33 +225,32 @@ def dashboard_header():
         rx.vstack(
             rx.hstack(
                 rx.badge(
-                    rx.icon("shield_check", size=40),
+                    rx.icon("shield_check", size=36),
                     color_scheme="cyan",
                     variant="soft",
                     radius="full",
-                    padding="0.55rem",
+                    padding="0.65rem",
                 ),
                 rx.heading(
                     "UniAccessControl",
-                    size="8",
+                    size="7",
                 ),
-                align="center"
+                align="center",
+                spacing="4",
             ),
             
             rx.text(
                 "Sistema de Controle de Acesso Universitário",
-                color_scheme="gray",
+                color="gray",
+                margin_bottom="5",
             ),
-            align="start",
-            spacing="1",
+            width="100%",
+            align="center",
+            spacing="4",
+            wrap="wrap",
         ),
-        rx.spacer(),
-        rx.button(
-            rx.icon("refresh-cw", size=16),
-            "Atualizar",
-            variant="soft",
-            on_click=DashboardState.carregar_dados,
-        ),
+        rx.divider(),
+        
         width="100%",
         align="center",
         spacing="4",
@@ -292,6 +292,116 @@ def system_summary():
         width="100%",
     )
 
+def auditoria_coluna(
+    titulo: str,
+    subtitulo: str,
+    logs,
+    icon: str,
+    color_scheme: str,
+):
+    return rx.card(
+        rx.vstack(
+            rx.hstack(
+                rx.badge(
+                    rx.icon(icon, size=18),
+                    color_scheme=color_scheme,
+                    variant="soft",
+                    radius="full",
+                    padding="0.5rem",
+                ),
+                rx.vstack(
+                    rx.heading(titulo, size="4"),
+                    rx.text(
+                        subtitulo,
+                        size="2",
+                        color_scheme="gray",
+                    ),
+                    spacing="0",
+                    align="start",
+                ),
+                width="100%",
+                align="center",
+                spacing="3",
+            ),
+
+            rx.divider(),
+
+            rx.box(
+                log_table_parcial(logs),
+                width="100%",
+                overflow_x="auto",
+            ),
+
+            width="100%",
+            spacing="4",
+        ),
+        width="100%",
+        min_width="320px",
+        flex="1",
+        variant="surface",
+    )
+
+def resumo_auditoria():
+    return rx.card(
+        rx.vstack(
+            rx.hstack(
+                rx.vstack(
+                    rx.heading(
+                        "Auditoria de Acessos",
+                        size="5",
+                    ),
+                    rx.text(
+                        "Últimos acessos permitidos e negados registrados no sistema.",
+                        size="2",
+                        color_scheme="gray",
+                    ),
+                    spacing="1",
+                    align="start",
+                ),
+
+                rx.spacer(),
+
+                rx.badge(
+                    "Últimos 10 logs",
+                    color_scheme="gray",
+                    variant="soft",
+                ),
+
+                width="100%",
+                align="center",
+                spacing="4",
+                wrap="wrap",
+            ),
+
+            rx.flex(
+                auditoria_coluna(
+                    titulo="Acessos Permitidos",
+                    subtitulo="Entradas autorizadas pelo sistema",
+                    logs=DashboardState.ultimos_permitidos,
+                    icon="circle-check",
+                    color_scheme="green",
+                ),
+
+                auditoria_coluna(
+                    titulo="Acessos Negados",
+                    subtitulo="Tentativas bloqueadas ou inválidas",
+                    logs=DashboardState.ultimos_negados,
+                    icon="circle-x",
+                    color_scheme="red",
+                ),
+
+                width="100%",
+                spacing="4",
+                wrap="wrap",
+                align="stretch",
+            ),
+
+            width="100%",
+            spacing="4",
+        ),
+        width="100%",
+    )
+
 def dashboard_page():
     return rx.box(
         comp.page_layout(
@@ -305,36 +415,13 @@ def dashboard_page():
                     display="none",
                 ),
 
-                rx.divider(),
-
                 system_status_card(),
 
                 system_summary(),
 
                 access_summary_card(),
 
-                rx.card(
-                    rx.vstack(
-                        rx.hstack(
-                            rx.heading(
-                                "Últimos 10 Logs",
-                                size="5",
-                            ),
-                            rx.spacer(),
-                            rx.badge(
-                                "Auditoria resumida",
-                                color_scheme="gray",
-                                variant="soft",
-                            ),
-                            width="100%",
-                            align="center",
-                        ),
-                        log_table(DashboardState.ultimos_logs),
-                        width="100%",
-                        spacing="4",
-                    ),
-                    width="100%",
-                ),
+                resumo_auditoria(),
 
                 width="100%",
                 align="start",

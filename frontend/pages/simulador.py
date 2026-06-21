@@ -1,11 +1,46 @@
 import reflex as rx
 
-from states.dashboard_state import DashboardState
+from states.simulador_state import SimuladorState
 from components.layout import page_layout
+
+def simulador_header():
+    return rx.vstack(
+        rx.hstack(
+            rx.badge(
+                rx.icon("scan-line", size=36),
+                color_scheme="blue",
+                variant="soft",
+                radius="full",
+                padding="0.65rem",
+            ),
+            rx.heading(
+                "Simulador de Acessos",
+                size="7",
+                margin_bottom="5",
+            ),
+            align="center",
+            spacing="4",
+        ),
+
+        rx.text(
+            "Simule leituras RFID e valide permissões de entrada em zonas controladas.",
+            color="gray",
+            margin_bottom="5",
+        ),
+
+        rx.divider(),
+
+        width="100%",
+        align="center",
+        spacing="4",
+        wrap="wrap",
+    )
 
 def simulador_page():
     return rx.box(
         page_layout(
+            simulador_header(),
+            
             rx.center(
                 rx.vstack(
                     rx.card(
@@ -15,25 +50,25 @@ def simulador_page():
                             
                             rx.box(
                                 rx.vstack(
-                                    rx.heading(DashboardState.sim_status, size="6", color="white"),
-                                    rx.text(DashboardState.sim_visor, color="white", size="3"),
+                                    rx.heading(SimuladorState.sim_status, size="6", color="white"),
+                                    rx.text(SimuladorState.sim_visor, color="white", size="3"),
                                     align_items="center",
                                     justify_content="center",
                                     text_align="center"
                                 ),
-                                bg=DashboardState.sim_cor_status,
+                                bg=SimuladorState.sim_cor_status,
                                 padding="6",
                                 border_radius="md",
                                 width="100%",
                                 margin_bottom="4"
                             ),
                             
-                            rx.input(placeholder="ID da Zona (Ex: 1 - Lab Eletrônica)", value=DashboardState.sim_zona, on_change=DashboardState.set_sim_zona, size="3"),
-                            rx.input(placeholder="Código Lido na Tag", value=DashboardState.sim_rfid, on_change=DashboardState.set_sim_rfid, size="3"),
+                            rx.input(placeholder="ID da Zona (Ex: 1 - Lab Eletrônica)", value=SimuladorState.sim_zona, on_change=SimuladorState.set_sim_zona, size="3"),
+                            rx.input(placeholder="Código Lido na Tag", value=SimuladorState.sim_rfid, on_change=SimuladorState.set_sim_rfid, size="3"),
                             
                             rx.button(
                                 "Simular Passagem do Cartão", 
-                                on_click=DashboardState.simular_leitura, 
+                                on_click=SimuladorState.simular_leitura, 
                                 color_scheme="blue", 
                                 size="3", 
                                 width="100%", 

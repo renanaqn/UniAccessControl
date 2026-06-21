@@ -7,6 +7,89 @@ from components.log_table import log_table
 from states.log_state import LogState
 from states.auth_state import AuthState 
 
+def auditoria_header():
+    return rx.vstack(
+        rx.hstack(
+            rx.badge(
+                rx.icon("file-search", size=36),
+                color_scheme="orange",
+                variant="soft",
+                radius="full",
+                padding="0.65rem",
+            ),
+            rx.heading(
+                "Auditoria de Acessos", 
+                size="7", 
+                margin_bottom="5"
+            ),
+            align="center",
+            spacing="4",
+        ),
+        
+        rx.text(
+            "Consulte, filtre e acompanhe os registros de entrada no sistema.", 
+            color="gray", 
+            margin_bottom="5"
+        ),
+        rx.divider(),
+        
+        width="100%",
+        align="center",
+        spacing="4",
+        wrap="wrap",
+    )
+
+def system_status_card():
+    """Resumo operacional do sistema."""
+    
+    return rx.card(
+        rx.vstack(
+            rx.hstack(
+                rx.heading("Status do Sistema", size="5"),
+                rx.spacer(),
+                rx.button(
+                    rx.icon("refresh-cw", size=16),
+                    "Atualizar",
+                    variant="soft",
+                    on_click=LogState.carregar_logs,
+                ),
+                width="100%",
+                align="center",
+            ),
+            rx.divider(),
+            rx.hstack(
+                rx.vstack(
+                    rx.text("Banco de dados", size="2", color_scheme="gray"),
+                    rx.badge(
+                        LogState.banco_status,
+                        color_scheme=LogState.banco_cor,
+                        variant="soft",
+                    ),
+                    align="start",
+                    spacing="1",
+                ),
+                rx.vstack(
+                    rx.text("Última atualização", size="2", color_scheme="gray"),
+                    rx.text(LogState.ultima_atualizacao, size="3", weight="medium"),
+                    align="start",
+                    spacing="1",
+                ),
+                rx.vstack(
+                    rx.text("Atualização automática", size="2", color_scheme="gray"),
+                    rx.text("A cada 5 segundos", size="3", weight="medium"),
+                    align="start",
+                    spacing="1",
+                ),
+                width="100%",
+                spacing="6",
+                wrap="wrap",
+            ),
+            width="100%",
+            align="start",
+            spacing="4",
+        ),
+        width="100%",
+    )
 
 def logs_page():
     return rx.box(
@@ -18,17 +101,15 @@ def logs_page():
                 # TÍTULO
                 # =========================
 
-                rx.heading(
-                    "Registros de Acesso",
-                    size="8"
-                ),
+                auditoria_header(),
                 
+                system_status_card(),
+                                
                 rx.moment(
-                    interval=1000,
-                    on_change=LogState.carregar_logs
+                    interval=5000,
+                    on_change=LogState.carregar_logs,
+                    display="none",
                 ),
-
-                rx.divider(),
 
                 # =========================
                 # FILTROS
