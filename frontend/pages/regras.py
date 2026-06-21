@@ -169,6 +169,145 @@ def paginacao_regras():
     )
 
 
+def filtro_select_regras(
+    label: str,
+    value,
+    options,
+    on_change,
+    icon: str,
+):
+    return rx.vstack(
+        rx.text(label, size="2", weight="medium", color_scheme="gray"),
+        rx.hstack(
+            rx.icon(icon, size=16),
+            rx.select(
+                options,
+                value=value,
+                on_change=on_change,
+                width="100%",
+                size="3",
+            ),
+            width="100%",
+            align="center",
+            spacing="2",
+        ),
+        width="100%",
+        min_width="220px",
+        flex="1",
+        align="start",
+        spacing="1",
+    )
+
+
+def filtro_hora_regras(label: str, value, on_change, icon: str):
+    return rx.vstack(
+        rx.text(label, size="2", weight="medium", color_scheme="gray"),
+        rx.input(
+            rx.input.slot(
+                rx.icon(icon, size=16),
+            ),
+            type="time",
+            value=value,
+            on_change=on_change,
+            width="100%",
+            size="3",
+        ),
+        width="100%",
+        min_width="180px",
+        flex="1",
+        align="start",
+        spacing="1",
+    )
+
+
+def filtros_regras():
+    return rx.card(
+        rx.vstack(
+            rx.hstack(
+                rx.hstack(
+                    rx.badge(
+                        rx.icon("sliders-horizontal", size=18),
+                        color_scheme="purple",
+                        variant="soft",
+                        radius="full",
+                        padding="0.5rem",
+                    ),
+                    rx.vstack(
+                        rx.heading("Filtros de Regras", size="5"),
+                        rx.text(
+                            "Filtre permissões por perfil, zona e intervalo de horário.",
+                            size="2",
+                            color_scheme="gray",
+                        ),
+                        spacing="0",
+                        align="start",
+                    ),
+                    align="center",
+                    spacing="3",
+                ),
+
+                rx.spacer(),
+
+                rx.button(
+                    rx.icon("x", size=16),
+                    "Limpar filtros",
+                    variant="soft",
+                    color_scheme="gray",
+                    on_click=RegrasState.limpar_filtros,
+                ),
+
+                width="100%",
+                align="center",
+                spacing="4",
+                wrap="wrap",
+            ),
+
+            rx.divider(),
+
+            rx.flex(
+                filtro_select_regras(
+                    label="Perfil",
+                    value=RegrasState.filtro_perfil,
+                    options=RegrasState.perfis,
+                    on_change=RegrasState.definir_perfil,
+                    icon="users",
+                ),
+
+                filtro_select_regras(
+                    label="Zona",
+                    value=RegrasState.filtro_zona,
+                    options=RegrasState.zonas,
+                    on_change=RegrasState.definir_zona,
+                    icon="map-pin",
+                ),
+
+                filtro_hora_regras(
+                    label="Horário inicial",
+                    value=RegrasState.filtro_hora_inicio,
+                    on_change=RegrasState.definir_hora_inicio,
+                    icon="clock-3",
+                ),
+
+                filtro_hora_regras(
+                    label="Horário final",
+                    value=RegrasState.filtro_hora_fim,
+                    on_change=RegrasState.definir_hora_fim,
+                    icon="clock-9",
+                ),
+
+                width="100%",
+                spacing="4",
+                wrap="wrap",
+                align="end",
+            ),
+
+            width="100%",
+            spacing="4",
+        ),
+        width="100%",
+        variant="surface",
+    )
+
 def regras_page():
     return rx.box(
         page_layout(
@@ -179,6 +318,12 @@ def regras_page():
                 # =========================
                 
                 regras_header(),
+                
+                # =========================
+                # Filtros
+                # =========================
+                
+                filtros_regras(),
                 
                 # =========================
                 # Tabela

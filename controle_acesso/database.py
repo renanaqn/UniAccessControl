@@ -282,21 +282,51 @@ class BancoDeDados:
             cursor.close()
             conexao.close()
     
-    def listar_usuarios(self, pagina = 1, limite = 5):
-        """Retorna todos os usuarios cadastrados."""
+    def listar_usuarios(
+        self,
+        pagina=1,
+        limite=5,
+        nome="",
+        rfid="",
+        perfil="TODOS",
+    ):
         query = """
-            SELECT id, nome, rfid_tag, perfil_id
-            FROM usuarios
+            SELECT 
+                u.id,
+                u.nome,
+                u.rfid_tag,
+                u.perfil_id,
+                p.nome_perfil
+            FROM usuarios u
+            JOIN perfis p ON p.id = u.perfil_id
+            WHERE 1=1
+        """
+
+        parametros = []
+
+        if nome:
+            query += " AND u.nome LIKE %s"
+            parametros.append(f"%{nome}%")
+
+        if rfid:
+            query += " AND u.rfid_tag LIKE %s"
+            parametros.append(f"%{rfid}%")
+
+        if perfil != "TODOS":
+            query += " AND p.nome_perfil = %s"
+            parametros.append(perfil)
+
+        query += """
+            ORDER BY u.nome
             LIMIT %s OFFSET %s
         """
-        
+
         offset = (pagina - 1) * limite
-        
-        parametros = [limite, offset]
-        
+        parametros.extend([limite, offset])
+
         conexao = self.conectar()
         cursor = conexao.cursor(dictionary=True)
-        
+
         try:
             cursor.execute(query, parametros)
             return cursor.fetchall()
@@ -304,7 +334,15 @@ class BancoDeDados:
             cursor.close()
             conexao.close()
     
-    def listar_regras(self, pagina = 1, limite = 5):
+    def listar_regras(
+        self, 
+        pagina = 1, 
+        limite = 5,
+        perfil = "TODOS",
+        zona = "Todas",
+        hora_inicio = "",
+        hora_fim = "",
+    ):
         """Retorna as regras de acesso"""
         
         query = """
@@ -318,13 +356,34 @@ class BancoDeDados:
             FROM regras_acesso r
             JOIN perfis p ON p.id = r.perfil_id
             JOIN zonas z ON z.id = r.zona_id
+            WHERE 1=1
+        """
+        
+        parametros = []
+
+        if perfil != "TODOS":
+            query += " AND p.nome_perfil = %s"
+            parametros.append(perfil)
+
+        if zona != "Todas":
+            query += " AND z.nome_zona = %s"
+            parametros.append(zona)
+
+        if hora_inicio:
+            query += " AND r.hora_inicio >= %s"
+            parametros.append(hora_inicio)
+
+        if hora_fim:
+            query += " AND r.hora_fim <= %s"
+            parametros.append(hora_fim)
+
+        query += """
             ORDER BY p.nome_perfil, z.nome_zona
             LIMIT %s OFFSET %s
         """
-        
+
         offset = (pagina - 1) * limite
-        
-        parametros = [limite, offset]
+        parametros.extend([limite, offset])
         
         conexao = self.conectar()
         cursor = conexao.cursor(dictionary=True)
@@ -368,6 +427,88 @@ class BancoDeDados:
             print(f"Erro ao contar registros de {tabela}: {err}")
             return 0
 
+        finally:
+            cursor.close()
+            conexao.close()
+    
+    def contar_usuarios_filtrados(
+        self,
+        nome="",
+        rfid="",
+        perfil="TODOS",
+    ):
+        query = """
+            SELECT COUNT(*) AS total
+            FROM usuarios u
+            JOIN perfis p ON p.id = u.perfil_id
+            WHERE 1=1
+        """
+
+        parametros = []
+
+        if nome:
+            query += " AND u.nome LIKE %s"
+            parametros.append(f"%{nome}%")
+
+        if rfid:
+            query += " AND u.rfid_tag LIKE %s"
+            parametros.append(f"%{rfid}%")
+
+        if perfil != "TODOS":
+            query += " AND p.nome_perfil = %s"
+            parametros.append(perfil)
+
+        conexao = self.conectar()
+        cursor = conexao.cursor(dictionary=True)
+
+        try:
+            cursor.execute(query, parametros)
+            resultado = cursor.fetchone()
+            return resultado["total"]
+        finally:
+            cursor.close()
+            conexao.close()
+    
+    def contar_regras_filtradas(
+        self,
+        perfil="TODOS",
+        zona="Todas",
+        hora_inicio="",
+        hora_fim="",
+    ):
+        query = """
+            SELECT COUNT(*) AS total
+            FROM regras_acesso r
+            JOIN perfis p ON p.id = r.perfil_id
+            JOIN zonas z ON z.id = r.zona_id
+            WHERE 1=1
+        """
+
+        parametros = []
+
+        if perfil != "TODOS":
+            query += " AND p.nome_perfil = %s"
+            parametros.append(perfil)
+
+        if zona != "Todas":
+            query += " AND z.nome_zona = %s"
+            parametros.append(zona)
+
+        if hora_inicio:
+            query += " AND r.hora_inicio >= %s"
+            parametros.append(hora_inicio)
+
+        if hora_fim:
+            query += " AND r.hora_fim <= %s"
+            parametros.append(hora_fim)
+
+        conexao = self.conectar()
+        cursor = conexao.cursor(dictionary=True)
+
+        try:
+            cursor.execute(query, parametros)
+            resultado = cursor.fetchone()
+            return resultado["total"]
         finally:
             cursor.close()
             conexao.close()

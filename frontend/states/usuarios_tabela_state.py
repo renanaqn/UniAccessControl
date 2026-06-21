@@ -16,6 +16,64 @@ class UsuariosTabelaState(rx.State):
     pagina_atual: int = 1
     limite: int = 10
     total_registros: int = 0
+    
+    filtro_nome: str = ""
+    filtro_rfid: str = ""
+    
+    filtro_perfil: str = "TODOS"
+    perfis: list[str] = ["TODOS"]
+
+    def carregar_pagina(self):
+        self.carregar_filtros()
+        self.carregar_usuarios()
+
+    def carregar_filtros(self):
+        db = BancoDeDados()
+
+        self.perfis = ["TODOS"] + [
+            str(perfil["nome_perfil"])
+            for perfil in db.listar_perfis()
+        ]
+
+    def carregar_usuarios(self):
+        db = BancoDeDados()
+
+        self.usuarios = db.listar_usuarios(
+            pagina=self.pagina_atual,
+            limite=self.limite,
+            nome=self.filtro_nome,
+            rfid=self.filtro_rfid,
+            perfil=self.filtro_perfil,
+        )
+
+        self.total_registros = db.contar_usuarios_filtrados(
+            nome=self.filtro_nome,
+            rfid=self.filtro_rfid,
+            perfil=self.filtro_perfil,
+        )
+
+    def aplicar_filtros(self):
+        self.pagina_atual = 1
+        self.carregar_usuarios()
+
+    def limpar_filtros(self):
+        self.filtro_nome = ""
+        self.filtro_rfid = ""
+        self.filtro_perfil = "TODOS"
+        self.pagina_atual = 1
+        self.carregar_usuarios()
+
+    def definir_nome(self, valor: str):
+        self.filtro_nome = valor
+        self.aplicar_filtros()
+
+    def definir_rfid(self, valor: str):
+        self.filtro_rfid = valor
+        self.aplicar_filtros()
+
+    def definir_perfil(self, valor: str):
+        self.filtro_perfil = valor
+        self.aplicar_filtros()
 
     @rx.var
     def total_paginas(self) -> int:
@@ -34,15 +92,6 @@ class UsuariosTabelaState(rx.State):
     @rx.var
     def tem_proxima_pagina(self) -> bool:
         return self.pagina_atual < self.total_paginas
-
-    def carregar_usuarios(self):
-        db = BancoDeDados()
-
-        self.total_registros = db.total_usuarios()
-        self.usuarios = db.listar_usuarios(
-            pagina=self.pagina_atual,
-            limite=self.limite,
-        )
 
     def proxima_pagina(self):
         if self.pagina_atual < self.total_paginas:

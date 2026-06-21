@@ -78,7 +78,7 @@ app.add_page(
     title="Usuários Cadastrados | UniAccessControl",
     on_load=[
         AuthState.verificar_acesso,
-        UsuariosTabelaState.carregar_usuarios,
+        UsuariosTabelaState.carregar_pagina,
     ],
 )
 
@@ -88,6 +88,6 @@ app.add_page(
     title="Regras de Acesso | UniAccessControl",
     on_load=[
         AuthState.verificar_acesso,
-        RegrasState.carregar_regras,
+        RegrasState.carregar_pagina,
     ],
 )

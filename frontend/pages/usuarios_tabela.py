@@ -58,11 +58,123 @@ def usuario_linha(usuario: dict):
         rx.table.cell(usuario["rfid_tag"]),
         rx.table.cell(
             rx.badge(
-                f"Perfil {usuario['perfil_id']}",
+                usuario["nome_perfil"],
                 color_scheme="green",
                 variant="soft",
             )
         ),
+    )
+
+
+def filtro_input(label: str, placeholder: str, value, on_change, icon: str):
+    return rx.vstack(
+        rx.text(label, size="2", weight="medium", color_scheme="gray"),
+        rx.input(
+            rx.input.slot(
+                rx.icon(icon, size=16),
+            ),
+            placeholder=placeholder,
+            value=value,
+            on_change=on_change,
+            width="100%",
+            size="3",
+        ),
+        width="100%",
+        min_width="240px",
+        flex="1",
+        align="start",
+        spacing="1",
+    )
+
+
+def filtros_usuarios():
+    return rx.card(
+        rx.vstack(
+            rx.hstack(
+                rx.hstack(
+                    rx.badge(
+                        rx.icon("sliders-horizontal", size=18),
+                        color_scheme="green",
+                        variant="soft",
+                        radius="full",
+                        padding="0.5rem",
+                    ),
+                    rx.vstack(
+                        rx.heading("Filtros de Usuários", size="5"),
+                        rx.text(
+                            "Filtre usuários por nome, tag RFID ou perfil.",
+                            size="2",
+                            color_scheme="gray",
+                        ),
+                        spacing="0",
+                        align="start",
+                    ),
+                    align="center",
+                    spacing="3",
+                ),
+
+                rx.spacer(),
+
+                rx.button(
+                    rx.icon("x", size=16),
+                    "Limpar filtros",
+                    variant="soft",
+                    color_scheme="gray",
+                    on_click=UsuariosTabelaState.limpar_filtros,
+                ),
+
+                width="100%",
+                align="center",
+                spacing="4",
+                wrap="wrap",
+            ),
+
+            rx.divider(),
+
+            rx.flex(
+                filtro_input(
+                    label="Nome",
+                    placeholder="Digite o nome do usuário...",
+                    value=UsuariosTabelaState.filtro_nome,
+                    on_change=UsuariosTabelaState.definir_nome,
+                    icon="user",
+                ),
+
+                filtro_input(
+                    label="Tag RFID",
+                    placeholder="Ex: A1B2C3D4",
+                    value=UsuariosTabelaState.filtro_rfid,
+                    on_change=UsuariosTabelaState.definir_rfid,
+                    icon="badge",
+                ),
+
+                rx.vstack(
+                    rx.text("Perfil", size="2", weight="medium", color_scheme="gray"),
+                    rx.select(
+                        UsuariosTabelaState.perfis,
+                        value=UsuariosTabelaState.filtro_perfil,
+                        on_change=UsuariosTabelaState.definir_perfil,
+                        width="100%",
+                        size="3",
+                    ),
+                    width="100%",
+                    min_width="200px",
+                    flex="1",
+                    align="start",
+                    spacing="1",
+                ),
+
+                width="100%",
+                spacing="4",
+                wrap="wrap",
+                align="end",
+            ),
+
+            width="100%",
+            spacing="4",
+        ),
+        width="100%",
+        variant="surface",
     )
 
 
@@ -161,7 +273,6 @@ def paginacao_usuarios():
         wrap="wrap",
     )
 
-
 def usuarios_tabela_page():
     return rx.box(
         page_layout(
@@ -172,6 +283,12 @@ def usuarios_tabela_page():
                 # =========================
                 
                 usuarios_tabela_header(),
+                
+                # =========================
+                # Filtros
+                # =========================
+                
+                filtros_usuarios(),
                 
                 # =========================
                 # Tabela
