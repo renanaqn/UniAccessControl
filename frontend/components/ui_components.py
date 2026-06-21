@@ -48,7 +48,7 @@ def sidebar():
 
                 rx.link(
                     rx.hstack(
-                        rx.icon("door-open", size=18),
+                        rx.icon("map-pin", size=18),
                         rx.text("Zonas", color="white"),
                         align="center",
                         spacing="3",

@@ -1,7 +1,7 @@
 import reflex as rx
 
 import components.layout as comp
-from components.log_table import log_table_parcial
+from components.tabelas import log_table_parcial
 
 from states.dashboard_state import DashboardState
 from states.auth_state import AuthState 

@@ -8,30 +8,48 @@ from states.auth_state import AuthState
 def usuarios_header():
     return rx.vstack(
         rx.hstack(
-            rx.badge(
-                rx.icon("users", size=36),
-                color_scheme="green",
-                variant="soft",
-                radius="full",
-                padding="0.65rem",
-            ),
-            rx.vstack(
-                rx.heading(
-                    "Gestão de Usuários",
-                    size="7",
+            rx.hstack(
+                rx.badge(
+                    rx.icon("users", size=36),
+                    color_scheme="green",
+                    variant="soft",
+                    radius="full",
+                    padding="0.65rem",
                 ),
-                rx.text(
-                    "Cadastre usuários, atualize credenciais RFID e revogue acessos quando necessário.",
-                    color_scheme="gray",
-                    size="3",
+                rx.vstack(
+                    rx.heading(
+                        "Gestão de Usuários",
+                        size="7",
+                    ),
+                    rx.text(
+                        "Cadastre usuários, atualize credenciais RFID e revogue acessos quando necessário.",
+                        color_scheme="gray",
+                        size="3",
+                    ),
+                    spacing="1",
+                    align="start",
                 ),
-                spacing="1",
-                align="start",
+                align="center",
+                spacing="4",
             ),
+            
+            rx.spacer(),
+            rx.link(
+                rx.button(
+                    rx.icon("table", size=16),
+                    "Ver usuários cadastradas",
+                    variant="soft",
+                    color_scheme="purple",
+                ),
+                href="/usuarios/lista",
+            ),
+            
+            width="100%",
             align="center",
             spacing="4",
+            wrap="wrap",
         ),
-
+        
         rx.divider(),
 
         width="100%",

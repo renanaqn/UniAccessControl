@@ -17,6 +17,7 @@ class ZonasState(rx.State):
 
     regra_perfil_id: str = ""
     regra_zona_id: str = ""
+    
     regra_inicio: str = ""
     regra_fim: str = ""
     msg_regra: str = ""

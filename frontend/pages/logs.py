@@ -2,7 +2,7 @@ import reflex as rx
 
 from components.layout import page_layout
 from components.ui_components import stat_card
-from components.log_table import log_table
+from components.tabelas import log_table
 
 from states.log_state import LogState
 from states.auth_state import AuthState 

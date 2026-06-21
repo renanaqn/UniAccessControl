@@ -282,40 +282,55 @@ class BancoDeDados:
             cursor.close()
             conexao.close()
     
-    def listar_usuarios(self):
+    def listar_usuarios(self, pagina = 1, limite = 5):
         """Retorna todos os usuarios cadastrados."""
         query = """
             SELECT id, nome, rfid_tag, perfil_id
             FROM usuarios
+            LIMIT %s OFFSET %s
         """
+        
+        offset = (pagina - 1) * limite
+        
+        parametros = [limite, offset]
         
         conexao = self.conectar()
         cursor = conexao.cursor(dictionary=True)
         
         try:
-            cursor.execute(query)
+            cursor.execute(query, parametros)
             return cursor.fetchall()
         finally:
             cursor.close()
             conexao.close()
     
-    def listar_regras(self):
+    def listar_regras(self, pagina = 1, limite = 5):
         """Retorna as regras de acesso"""
         
         query = """
             SELECT
-                perfil_id,
-                zona_id,
-                hora_inicio,
-                hora_fim
-            FROM regras_acesso
+                r.perfil_id,
+                p.nome_perfil,
+                r.zona_id,
+                z.nome_zona,
+                r.hora_inicio,
+                r.hora_fim
+            FROM regras_acesso r
+            JOIN perfis p ON p.id = r.perfil_id
+            JOIN zonas z ON z.id = r.zona_id
+            ORDER BY p.nome_perfil, z.nome_zona
+            LIMIT %s OFFSET %s
         """
+        
+        offset = (pagina - 1) * limite
+        
+        parametros = [limite, offset]
         
         conexao = self.conectar()
         cursor = conexao.cursor(dictionary=True)
         
         try:
-            cursor.execute(query)
+            cursor.execute(query, parametros)
             return cursor.fetchall()
         finally:
             cursor.close()
@@ -336,7 +351,6 @@ class BancoDeDados:
         finally:
             cursor.close()
             conexao.close()
-    
     
     def _contar_registros(self, tabela):
         """Retorna a quantidade total de items em certa tabela"""
@@ -366,6 +380,9 @@ class BancoDeDados:
 
     def total_zonas(self):
         return self._contar_registros("zonas")
+    
+    def total_regras(self):
+        return self._contar_registros("regras_acesso")
     
     def acessos_permitidos_hoje(self):
 
