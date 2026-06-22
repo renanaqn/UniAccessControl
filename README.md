@@ -113,7 +113,7 @@ Credenciais de Teste (Administrador):
 A arquitetura do projeto aplica o princípio de Separation of Concerns (Separação de Responsabilidades), dividindo o banco de dados, as regras de negócio e a interface do usuário.
 
 ```
-UniAccessControl/│
+UniAccessControl
 ├── controle_acesso/                 # Camada de Regras de Negócio e Persistência
 │   ├── __init__.py
 │   ├── database.py                  # Conexão com MySQL e operações de banco de dados
