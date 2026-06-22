@@ -39,5 +39,5 @@ coverage report -m
 
 Com isso, todos os fluxos condicionais (if/else) das regras de negócio foram validados, e a cobertura global exigida foi superada, conforme ilustrado no relatório abaixo:
 
-![Print Coverage](../assets/tests_coverage.png)
+![Print Coverage](../assets/testes_coverage.png)
 
